@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- skill:chrome -->
+<style>
+/* Credit line — bottom-right */
+.design-ui-credit {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  font: 11px/1 system-ui, sans-serif;
+  color: rgba(128,128,128,0.5);
+  pointer-events: none;
+  z-index: 2147483647;
+  transition: opacity 0.4s ease;
+  user-select: none;
+  letter-spacing: 0.02em;
+}
+
+/* Hide chrome on touch devices */
+@media (hover: none) {
+  .design-ui-credit { display: none; }
+}
+
+/* Print fixes */
+@media print {
+  * {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+  }
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .design-ui-credit { display: none !important; }
+}
+
+</style>
+<script>
+(function () {
+    // Design-ui pages are single compositions, so the whole body is editable.
+    function markEditable() {
+        document.body.classList.add('artifact-editable');
+    }
+
+    // Credit badge with idle-fade. Hover devices only.
+    function initChromeUI() {
+        if (!matchMedia('(hover: hover)').matches) return;
+
+        var credit = document.createElement('div');
+        credit.className = 'design-ui-credit';
+        credit.setAttribute('aria-hidden', 'true');
+        credit.innerHTML = '\u{1F49C} by ClickUp Brain';
+        document.body.appendChild(credit);
+
+        var timer = null;
+        var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
+        fade(true);
+        var show = function () {
+            fade(false);
+            clearTimeout(timer);
+            timer = setTimeout(function () { fade(true); }, 3000);
+        };
+        document.addEventListener('mousemove', show);
+        show();
+    }
+
+    function init() {
+        markEditable();
+        initChromeUI();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+</script>
+<!-- /skill:chrome -->
+<!-- skill:libraries -->
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js" integrity="sha384-wHFvAtjmgnkA2PJcMsDaCgdipf7X7YV44X/igbLHpvGiq6T5/PvFKl93grpvtbQT" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",()=>lucide.createIcons())</script>
+<!-- /skill:libraries -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeLab · Gerar Nota</title>
+<style>
+:root{--font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--bg:oklch(97% 0.008 55);--surface:oklch(99.5% 0.004 55);--border:oklch(90% 0.01 55);--border-subtle:oklch(93% 0.008 55);--text-primary:oklch(18% 0.012 55);--text-secondary:oklch(45% 0.015 55);--text-muted:oklch(60% 0.01 55);--accent:oklch(58% 0.14 35);--accent-light:oklch(92% 0.04 35);--radius-sm:6px;--radius-md:10px;--ease-out:cubic-bezier(0.22,1,0.36,1);--brand:#1a3a5c;}
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:var(--font);background:var(--bg);color:var(--text-primary);font-size:14px;line-height:1.5;}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--border);}
+.app-header .logo{font-size:1.25rem;font-weight:700;letter-spacing:-0.02em;color:var(--accent);}.app-header .logo span{color:var(--text-muted);font-weight:400;font-size:0.875rem;margin-left:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:500;cursor:pointer;transition:all 150ms var(--ease-out);font-family:var(--font);text-decoration:none;}
+.btn-primary{background:var(--accent);color:oklch(98% 0.005 55);}.btn-primary:hover{opacity:0.88;}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border);}.btn-ghost:hover{background:var(--bg);}
+.generator{max-width:700px;margin:24px auto;padding:0 24px;}
+.gen-section{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:20px;margin-bottom:16px;}
+.gen-section h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;}
+.gen-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.gen-label{font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;display:block;}
+.gen-input,.gen-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:var(--font);color:var(--text-primary);background:var(--bg);}
+.gen-input:focus,.gen-select:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent;}
+.item-list{display:flex;flex-direction:column;gap:8px;}
+.item-row{display:grid;grid-template-columns:auto 1fr 60px 80px 80px 32px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-subtle);font-size:13px;}.item-row:last-child{border-bottom:none;}
+.item-row input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);}
+.item-desc{font-weight:500;}.item-sub{font-size:11px;color:var(--text-muted);}
+.item-num{text-align:center;font-variant-numeric:tabular-nums;}.item-money{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;}
+.total-bar{display:flex;justify-content:flex-end;padding:12px 0;font-size:15px;font-weight:700;}
+.no-items{text-align:center;padding:24px;color:var(--text-muted);font-size:13px;}
+.gen-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+/* Receipt */
+.receipt{display:none;padding:40px;max-width:800px;margin:0 auto;font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a1a;font-size:13px;line-height:1.6;}
+.receipt.printing{display:block;}
+.receipt-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;}
+.receipt-brand{display:flex;flex-direction:column;gap:4px;}
+.receipt-brand-name{font-size:20px;font-weight:700;color:var(--brand);}
+.receipt-brand-info{font-size:12px;color:#666;}
+.receipt-logo{width:90px;height:90px;}
+.receipt-title{font-size:22px;font-weight:700;margin-bottom:4px;border-bottom:2px solid var(--brand);padding-bottom:8px;display:inline-block;}
+.receipt-number{font-size:13px;color:#666;margin-bottom:24px;}
+.receipt-parties{display:flex;justify-content:space-between;margin-bottom:30px;}
+.receipt-party h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#888;margin-bottom:6px;}
+.receipt-party p{font-size:13px;margin-bottom:2px;}
+.receipt-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.receipt-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#666;border-bottom:2px solid #ddd;background:#f8f8f8;}
+.receipt-table th:nth-child(3),.receipt-table th:nth-child(4),.receipt-table th:nth-child(5){text-align:right;}
+.receipt-table td{padding:10px 12px;border-bottom:1px solid #eee;font-size:13px;}
+.receipt-table td:nth-child(3),.receipt-table td:nth-child(4),.receipt-table td:nth-child(5){text-align:right;font-variant-numeric:tabular-nums;}
+.receipt-totals{display:flex;justify-content:flex-end;margin-bottom:24px;}
+.receipt-totals table{border-collapse:collapse;}
+.receipt-totals td{padding:4px 12px;font-size:13px;}
+.receipt-totals .total-label{text-align:right;color:#666;}
+.receipt-totals .total-value{text-align:right;font-weight:600;}
+.receipt-totals .grand-total td{font-size:15px;font-weight:700;border-top:2px solid #ddd;padding-top:8px;}
+.receipt-payment{background:#f8f8f8;border:1px solid #eee;border-radius:6px;padding:14px 16px;margin-bottom:24px;display:inline-block;}
+.receipt-payment h4{font-size:11px;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:6px;}
+.receipt-payment p{font-size:12px;margin-bottom:2px;}
+.receipt-obs{margin-bottom:30px;}
+.receipt-obs h4{font-size:11px;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:6px;}
+.receipt-obs p{font-size:12px;color:#444;}
+.receipt-signature{text-align:center;margin-top:60px;}
+.receipt-signature-line{width:300px;border-top:1px solid #333;margin:0 auto 6px;padding-top:8px;font-size:12px;color:#666;}
+@media print{body{background:white;}.app-header,.generator{display:none!important;}.receipt{display:block!important;padding:20px 40px;max-width:none;}@page{margin:15mm 10mm;}}
+@media(max-width:768px){.generator{padding:0 16px;}.gen-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="logo">NeLab<span>Notas de Entrega</span></div>
+  <a href="lab-producao.html" class="btn btn-ghost">← Voltar à Produção</a>
+</header>
+
+<div class="generator" id="generator">
+  <div class="gen-section">
+    <h3>Dados da nota</h3>
+    <div class="gen-row">
+      <div><label class="gen-label">Clínica</label><select class="gen-select" id="nota-clinic" onchange="loadItems()"><option value="Oral Fácil Prime">Oral Fácil Prime</option><option value="Oral Fácil Dentista">Oral Fácil Dentista</option></select></div>
+      <div><label class="gen-label">Data</label><input type="date" class="gen-input" id="nota-date"></div>
+    </div>
+    <div class="gen-row">
+      <div><label class="gen-label">Nº do recibo</label><input type="text" class="gen-input" id="nota-number" readonly></div>
+      <div><label class="gen-label">Forma de pagamento</label><select class="gen-select" id="nota-payment"><option value="PIX">PIX</option><option value="Dinheiro">Dinheiro</option><option value="Transferência">Transferência</option></select></div>
+    </div>
+  </div>
+
+  <div class="gen-section">
+    <h3>Itens (trabalhos prontos/entregues)</h3>
+    <div class="item-list" id="item-list"><div class="no-items">Selecione a clínica</div></div>
+    <div class="total-bar" id="total-bar"></div>
+  </div>
+
+  <div class="gen-section">
+    <h3>Adicionar item manual</h3>
+    <div class="gen-row">
+      <div><label class="gen-label">Descrição</label><input type="text" class="gen-input" id="manual-desc" placeholder="Ex: Bloco Biocrown"></div>
+      <div><label class="gen-label">Paciente</label><input type="text" class="gen-input" id="manual-patient" placeholder="Nome do paciente"></div>
+    </div>
+    <div class="gen-row">
+      <div><label class="gen-label">Quantidade</label><input type="number" class="gen-input" id="manual-qty" value="1" min="1"></div>
+      <div><label class="gen-label">Valor unitário (R$)</label><input type="number" class="gen-input" id="manual-price" value="100" min="0" step="10"></div>
+    </div>
+    <div style="margin-top:8px"><button class="btn btn-ghost" onclick="addManualItem()"><i data-lucide="plus" style="width:14px;height:14px"></i>Adicionar item</button></div>
+  </div>
+
+  <div class="gen-actions">
+    <button class="btn btn-primary" onclick="generateReceipt()" style="padding:12px 24px;font-size:14px"><i data-lucide="file-text" style="width:16px;height:16px"></i>Gerar e Imprimir Nota</button>
+  </div>
+</div>
+
+<!-- Receipt -->
+<div class="receipt" id="receipt">
+  <div class="receipt-header">
+    <div class="receipt-brand">
+      <div class="receipt-brand-name">NeLab</div>
+      <div class="receipt-brand-info">Bahia<br>Brazil<br>nelabirece@gmail.com</div>
+    </div>
+    <div class="receipt-logo">
+      <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="5" width="100" height="100" rx="20" stroke="#1a3a5c" stroke-width="8" fill="none"/>
+        <path d="M38 75V30L68 65V30" stroke="#1a3a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M68 75H88" stroke="#1a3a5c" stroke-width="8" stroke-linecap="round"/>
+        <text x="60" y="132" text-anchor="middle" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#1a3a5c">NeLab</text>
+      </svg>
+    </div>
+  </div>
+  <div class="receipt-title">RECIBO DE VENDAS</div>
+  <div class="receipt-number" id="r-number"></div>
+  <div class="receipt-parties">
+    <div class="receipt-party"><h4>Faturar para</h4><div id="r-client"></div></div>
+    <div class="receipt-party" style="text-align:right"><h4>Data do recibo</h4><div id="r-date" style="font-weight:700;font-size:14px"></div></div>
+  </div>
+  <table class="receipt-table">
+    <thead><tr><th>Nº</th><th>Item & Descrição</th><th>Quant.</th><th>Taxa</th><th>Montante</th></tr></thead>
+    <tbody id="r-items"></tbody>
+  </table>
+  <div class="receipt-totals"><table><tbody id="r-totals"></tbody></table></div>
+  <div class="receipt-payment" id="r-payment"></div>
+  <div class="receipt-obs">
+    <h4>Observações</h4>
+    <p>Forma de Pagamento: PIX (nelabirece@gmail.com)<br>ELLIF SOUZA NASCIMENTO<br>Banco: Next 237 &nbsp;&nbsp; Agência: 3925<br>Conta corrente: 226211-8</p>
+  </div>
+  <div style="margin-top:16px"><h4 style="font-size:11px;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:4px;">Termos & Condições</h4></div>
+  <div class="receipt-signature"><div class="receipt-signature-line">Assinatura</div></div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+const PRICES={'Bloco':100,'Provisório':60,'Provisório Oco':60,'Tabletop':70};
+const CLINICS={'Oral Fácil Prime':{name:'Oral Fácil Infinity Prime',address:'Av. Caraíbas, 378 - Centro\nIrecê\n44900-000 Bahia\nBrasil'},'Oral Fácil Dentista':{name:'Oral Fácil Dentista',address:'Irecê\nBahia\nBrasil'}};
+const STORAGE_KEY='nelab-producao-v2',RECEIPT_KEY='nelab-receipts-counter';
+let proteses=[],placas=[],manualItems=[];
+let receiptCounter=parseInt(localStorage.getItem(RECEIPT_KEY))||22;
+function loadStorage(){try{const r=localStorage.getItem(STORAGE_KEY);if(r){const d=JSON.parse(r);proteses=d.proteses||[];placas=d.placas||[];}}catch(e){}}
+function getNextReceiptNumber(){receiptCounter++;localStorage.setItem(RECEIPT_KEY,receiptCounter);return'SR-'+String(receiptCounter).padStart(5,'0');}
+function money(v){return v.toFixed(2).replace('.',',');}
+
+function init(){document.getElementById('nota-date').value=new Date().toISOString().split('T')[0];document.getElementById('nota-number').value='SR-'+String(receiptCounter+1).padStart(5,'0');loadStorage();loadItems();lucide.createIcons();}
+
+function loadItems(){
+  const clinic=document.getElementById('nota-clinic').value;
+  const available=proteses.filter(w=>w.clinic===clinic&&(w.stage==='Pronto'||w.stage==='Entregue'));
+  const container=document.getElementById('item-list');
+  if(!available.length&&!manualItems.length){container.innerHTML='<div class="no-items">Nenhum trabalho pronto/entregue para esta clínica</div>';updateTotal();return;}
+  let html='';
+  available.forEach((w,i)=>{const price=PRICES[w.type]||100;const total=price*w.elements;const desc=w.type+(w.type==='Bloco'?' Biocrown':'');html+=`<div class="item-row"><input type="checkbox" checked data-idx="${i}" data-source="auto" onchange="updateTotal()"><div><div class="item-desc">${desc}</div><div class="item-sub">${w.patient}</div></div><div class="item-num">${w.elements}</div><div class="item-money">${money(price)}</div><div class="item-money">${money(total)}</div><div></div></div>`;});
+  manualItems.forEach((item,i)=>{const total=item.qty*item.price;html+=`<div class="item-row"><input type="checkbox" checked data-idx="${i}" data-source="manual" onchange="updateTotal()"><div><div class="item-desc">${item.desc}</div><div class="item-sub">${item.patient}</div></div><div class="item-num">${item.qty}</div><div class="item-money">${money(item.price)}</div><div class="item-money">${money(total)}</div><button onclick="removeManual(${i})" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px">×</button></div>`;});
+  container.innerHTML=html;updateTotal();
+}
+
+function updateTotal(){
+  const clinic=document.getElementById('nota-clinic').value;
+  const available=proteses.filter(w=>w.clinic===clinic&&(w.stage==='Pronto'||w.stage==='Entregue'));
+  let total=0;
+  document.querySelectorAll('#item-list input[type="checkbox"]:checked').forEach(cb=>{const source=cb.dataset.source;const idx=parseInt(cb.dataset.idx);if(source==='auto'){const w=available[idx];if(w)total+=(PRICES[w.type]||100)*w.elements;}else{const item=manualItems[idx];if(item)total+=item.qty*item.price;}});
+  document.getElementById('total-bar').innerHTML=total>0?`Total: <span style="color:var(--accent);margin-left:8px">R$ ${money(total)}</span>`:'';
+}
+
+function addManualItem(){const desc=document.getElementById('manual-desc').value.trim();const patient=document.getElementById('manual-patient').value.trim();const qty=parseInt(document.getElementById('manual-qty').value)||1;const price=parseFloat(document.getElementById('manual-price').value)||100;if(!desc)return;manualItems.push({desc,patient,qty,price});document.getElementById('manual-desc').value='';document.getElementById('manual-patient').value='';loadItems();}
+function removeManual(i){manualItems.splice(i,1);loadItems();}
+
+function generateReceipt(){
+  const clinic=document.getElementById('nota-clinic').value;const date=document.getElementById('nota-date').value;const payment=document.getElementById('nota-payment').value;
+  const available=proteses.filter(w=>w.clinic===clinic&&(w.stage==='Pronto'||w.stage==='Entregue'));
+  const items=[];
+  document.querySelectorAll('#item-list input[type="checkbox"]:checked').forEach(cb=>{const source=cb.dataset.source;const idx=parseInt(cb.dataset.idx);if(source==='auto'){const w=available[idx];if(w){const price=PRICES[w.type]||100;items.push({desc:w.type+(w.type==='Bloco'?' Biocrown':''),patient:w.patient,qty:w.elements,price,total:price*w.elements});}}else{const item=manualItems[idx];if(item)items.push({desc:item.desc,patient:item.patient,qty:item.qty,price:item.price,total:item.qty*item.price});}});
+  if(!items.length){alert('Selecione pelo menos um item.');return;}
+  const num=getNextReceiptNumber();document.getElementById('nota-number').value='SR-'+String(receiptCounter+1).padStart(5,'0');
+  document.getElementById('r-number').textContent='# do recibo de vendas '+num;
+  const clinicInfo=CLINICS[clinic];document.getElementById('r-client').innerHTML=`<p style="font-weight:600">${clinicInfo.name}</p><p>${clinicInfo.address.replace(/\n/g,'<br>')}</p>`;
+  const d=new Date(date+'T00:00:00');document.getElementById('r-date').textContent=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  let itemsHtml='',grandTotal=0;items.forEach((item,i)=>{itemsHtml+=`<tr><td>${i+1}</td><td>${item.desc}<br><span style="color:#666;font-size:12px">${item.patient}</span></td><td>${item.qty.toFixed(2)}<br><span style="font-size:11px;color:#666">unidades</span></td><td>${money(item.price)}</td><td>${money(item.total)}</td></tr>`;grandTotal+=item.total;});
+  document.getElementById('r-items').innerHTML=itemsHtml;
+  document.getElementById('r-totals').innerHTML=`<tr><td class="total-label">Subtotal</td><td class="total-value">${money(grandTotal)}</td></tr><tr class="grand-total"><td class="total-label">Total</td><td class="total-value">BRL${money(grandTotal)}</td></tr>`;
+  document.getElementById('r-payment').innerHTML=`<h4>Payment Details</h4><p>Payment Mode &nbsp;&nbsp;<strong>${payment}</strong></p>`;
+  document.getElementById('receipt').classList.add('printing');document.getElementById('generator').style.display='none';
+  setTimeout(()=>{window.print();setTimeout(()=>{document.getElementById('receipt').classList.remove('printing');document.getElementById('generator').style.display='';},500);},300);
+}
+init();
+</script>
+</body>
+</html>
