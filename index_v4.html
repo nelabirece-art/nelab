@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeLab · Produção</title>
+<style>
+:root{--font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--bg:oklch(97% 0.008 55);--surface:oklch(99.5% 0.004 55);--border:oklch(90% 0.01 55);--border-subtle:oklch(93% 0.008 55);--text-primary:oklch(18% 0.012 55);--text-secondary:oklch(45% 0.015 55);--text-muted:oklch(60% 0.01 55);--accent:oklch(58% 0.14 35);--accent-light:oklch(92% 0.04 35);--status-green:oklch(55% 0.18 145);--status-green-bg:oklch(93% 0.06 145);--status-yellow:oklch(62% 0.16 80);--status-yellow-bg:oklch(93% 0.06 80);--status-red:oklch(52% 0.2 25);--status-red-bg:oklch(92% 0.06 25);--status-blue:oklch(55% 0.14 250);--status-blue-bg:oklch(93% 0.05 250);--stage-recebido:oklch(55% 0.12 250);--stage-desenho:oklch(55% 0.14 290);--stage-impressao:oklch(55% 0.14 200);--stage-modelo:oklch(55% 0.12 80);--stage-maquiagem:oklch(55% 0.14 330);--stage-pronto:oklch(55% 0.16 145);--stage-entregue:oklch(50% 0.1 55);--stage-limpeza:oklch(55% 0.12 200);--stage-confeccao:oklch(55% 0.14 80);--stage-corte:oklch(55% 0.14 330);--clinic-prime:oklch(52% 0.15 270);--clinic-dentista:oklch(52% 0.15 160);--danger:oklch(52% 0.2 25);--danger-bg:oklch(94% 0.04 25);--placa-accent:oklch(52% 0.14 200);--placa-light:oklch(92% 0.04 200);--radius-sm:6px;--radius-md:10px;--radius-lg:14px;--ease-out:cubic-bezier(0.22,1,0.36,1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--text-primary);font-size:14px;line-height:1.5;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+.header-left{display:flex;align-items:center;gap:16px;}
+.logo{font-size:1.25rem;font-weight:700;letter-spacing:-0.02em;color:var(--accent);}
+.logo span{color:var(--text-muted);font-weight:400;font-size:0.875rem;margin-left:8px;}
+.header-actions{display:flex;align-items:center;gap:10px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:500;cursor:pointer;transition:all 150ms var(--ease-out);font-family:var(--font);text-decoration:none;}
+.btn-primary{background:var(--accent);color:oklch(98% 0.005 55);}
+.btn-primary:hover{opacity:0.88;}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--bg);}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid oklch(88% 0.04 25);}
+.btn-placa{background:var(--placa-accent);color:oklch(98% 0.005 55);}
+.btn-placa:hover{opacity:0.88;}
+.btn-sm{padding:6px 12px;font-size:12px;}
+
+.section-tabs{display:flex;align-items:center;gap:0;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;flex-shrink:0;}
+.section-tab{padding:12px 20px;font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:var(--font);border-bottom:2px solid transparent;transition:all 150ms var(--ease-out);}
+.section-tab:hover{color:var(--text-primary);}
+.section-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.subtabs{display:flex;align-items:center;gap:6px;padding:10px 24px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+.subtab{padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:var(--font);transition:all 150ms var(--ease-out);}
+.subtab:hover{color:var(--text-primary);background:var(--bg);}
+.subtab.active{color:var(--accent);background:var(--accent-light);}
+.subtab.active-placa{color:var(--placa-accent);background:var(--placa-light);}
+
+.nav{display:flex;align-items:center;gap:4px;padding:8px 24px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;}
+.nav-tab{padding:8px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all 150ms var(--ease-out);white-space:nowrap;border:none;background:none;font-family:var(--font);}
+.nav-tab:hover{color:var(--text-primary);background:var(--bg);}
+.nav-tab.active{color:var(--accent);background:var(--accent-light);}
+.nav-tab.active-placa{color:var(--placa-accent);background:var(--placa-light);}
+
+.main{flex:1;overflow:hidden;position:relative;}
+.section{display:none;height:100%;flex-direction:column;}
+.section.active{display:flex;}
+.subsection{display:none;height:100%;flex-direction:column;}
+.subsection.active{display:flex;}
+
+.kanban{display:none;gap:12px;padding:20px 24px;height:100%;overflow-x:auto;overflow-y:hidden;}
+.kanban.active{display:flex;}
+.kanban-column{min-width:250px;max-width:280px;flex-shrink:0;display:flex;flex-direction:column;height:100%;}
+.column-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;margin-bottom:8px;border-radius:var(--radius-md);background:var(--surface);border:1px solid var(--border-subtle);}
+.column-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;}
+.column-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.column-count{font-size:12px;color:var(--text-muted);font-weight:500;background:var(--bg);padding:2px 8px;border-radius:10px;}
+.column-cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+
+.card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;cursor:pointer;transition:all 200ms var(--ease-out);position:relative;}
+.card:hover{border-color:var(--border);transform:translateY(-1px);box-shadow:0 4px 12px oklch(0% 0 0 / 0.06);}
+.card-status-indicator{position:absolute;top:14px;right:14px;width:10px;height:10px;border-radius:50%;}
+.card-status-indicator.green{background:var(--status-green);box-shadow:0 0 0 3px var(--status-green-bg);}
+.card-status-indicator.yellow{background:var(--status-yellow);box-shadow:0 0 0 3px var(--status-yellow-bg);}
+.card-status-indicator.red{background:var(--status-red);box-shadow:0 0 0 3px var(--status-red-bg);animation:pulse-red 2s infinite;}
+.card-status-indicator.blue{background:var(--status-blue);box-shadow:0 0 0 3px var(--status-blue-bg);}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 3px var(--status-red-bg);}50%{box-shadow:0 0 0 6px oklch(92% 0.03 25);}}
+.card-patient{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;padding-right:20px;}
+.card-clinic{font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+.card-line{font-size:12px;color:var(--text-secondary);margin-bottom:3px;}
+.card-modelo{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--bg);color:var(--text-secondary);margin-bottom:4px;}
+.card-modelo.sim{background:var(--status-blue-bg);color:var(--status-blue);}
+.card-due{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);margin-top:6px;}
+.card-due i{width:13px;height:13px;}
+.card-due.overdue{color:var(--status-red);font-weight:500;}
+.card-due.soon{color:var(--status-yellow);font-weight:500;}
+.card-due.ontime{color:var(--status-green);}
+.card-due.delivered{color:var(--status-blue);}
+
+.list-view{padding:20px 24px;height:100%;overflow-y:auto;display:none;}
+.list-view.active{display:block;}
+.list-table{width:100%;border-collapse:separate;border-spacing:0;}
+.list-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:1;}
+.list-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border-subtle);vertical-align:middle;}
+.list-table tr:hover td{background:var(--surface);}
+.list-table .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;}
+.stage-badge{display:inline-flex;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;}
+.clinic-badge{display:inline-flex;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;color:oklch(99% 0.005 55);}
+
+.resumo-view{padding:20px 24px;height:100%;overflow-y:auto;}
+.resumo-filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.resumo-filter-bar select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);color:var(--text-primary);background:var(--surface);}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;}
+.stat-card-label{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
+.stat-card-value{font-size:22px;font-weight:700;color:var(--text-primary);}
+.stat-card-value.green{color:var(--status-green);}
+.resumo-group{margin-bottom:28px;}
+.resumo-group-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border);flex-wrap:wrap;}
+.resumo-group-count{font-size:12px;color:var(--text-muted);background:var(--bg);padding:2px 10px;border-radius:10px;font-weight:500;}
+.resumo-table{width:100%;border-collapse:separate;border-spacing:0;}
+.resumo-table th{text-align:left;padding:8px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);border-bottom:1px solid var(--border-subtle);}
+.resumo-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border-subtle);}
+.resumo-table tr:last-child td{border-bottom:none;}
+.resumo-table .total-row td{font-weight:700;border-top:1px solid var(--border);border-bottom:none;padding-top:12px;}
+.resumo-table tr.row-delivered td{opacity:0.6;}
+.export-bar{display:flex;justify-content:flex-end;margin-bottom:16px;gap:8px;}
+.delivered-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:var(--status-blue-bg);color:var(--status-blue);}
+
+.detail-overlay{position:fixed;inset:0;background:oklch(18% 0.01 55 / 0.4);z-index:100;opacity:0;pointer-events:none;transition:opacity 200ms var(--ease-out);}
+.detail-overlay.open{opacity:1;pointer-events:auto;}
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:min(560px,90vw);background:var(--surface);z-index:101;transform:translateX(100%);transition:transform 300ms var(--ease-out);overflow-y:auto;display:flex;flex-direction:column;}
+.detail-panel.open{transform:translateX(0);}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.detail-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:var(--bg);border-radius:var(--radius-sm);cursor:pointer;color:var(--text-secondary);}
+.detail-close:hover{background:var(--border);}
+.detail-body{padding:24px;flex:1;display:flex;flex-direction:column;gap:20px;}
+.detail-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:10px;}
+.detail-field{display:flex;align-items:baseline;gap:12px;padding:8px 0;}
+.detail-field-label{font-size:12px;color:var(--text-muted);min-width:140px;flex-shrink:0;}
+.detail-field-value{font-size:13px;color:var(--text-primary);font-weight:500;}
+.detail-stage-history{display:flex;flex-direction:column;gap:8px;}
+.stage-history-item{display:flex;align-items:center;gap:10px;font-size:12px;}
+.stage-history-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.stage-history-item.future .stage-history-dot{background:var(--border);}
+.stage-history-item.future{color:var(--text-muted);}
+.stage-history-item.current{font-weight:600;color:var(--accent);}
+.detail-notes{width:100%;min-height:80px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:var(--font);resize:vertical;color:var(--text-primary);background:var(--bg);}
+.detail-notes:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent;}
+.detail-footer{padding:16px 24px;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;}
+.confirm-bar{display:none;align-items:center;gap:10px;padding:12px 16px;background:var(--danger-bg);border-radius:var(--radius-sm);font-size:13px;color:var(--danger);width:100%;}
+.confirm-bar.visible{display:flex;}
+.confirm-bar span{flex:1;font-weight:500;}
+.confirm-btn{padding:6px 14px;border-radius:var(--radius-sm);border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);}
+.confirm-btn-yes{background:var(--danger);color:oklch(98% 0.005 55);}
+.confirm-btn-no{background:transparent;color:var(--danger);border:1px solid oklch(80% 0.06 25);}
+
+.modal-overlay{position:fixed;inset:0;background:oklch(18% 0.01 55 / 0.5);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 200ms var(--ease-out);}
+.modal-overlay.open{opacity:1;pointer-events:auto;}
+.modal{background:var(--surface);border-radius:var(--radius-lg);width:min(560px,92vw);max-height:90vh;overflow-y:auto;transform:scale(0.96) translateY(8px);transition:transform 300ms var(--ease-out);padding:28px;}
+.modal.modal-wide{width:min(720px,94vw);}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+.modal h2{font-size:1.25rem;font-weight:700;margin-bottom:20px;}
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+.form-input,.form-select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:var(--font);color:var(--text-primary);background:var(--bg);}
+.form-input:focus,.form-select:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.form-row-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;}
+.toggle-group{display:flex;gap:8px;}
+.toggle-btn{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-size:13px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:var(--font);transition:all 150ms var(--ease-out);}
+.toggle-btn.selected{background:var(--accent);color:oklch(98% 0.005 55);border-color:var(--accent);}
+
+.save-indicator{position:fixed;bottom:16px;right:16px;z-index:50;background:var(--status-green-bg);color:var(--status-green);padding:6px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;opacity:0;transition:opacity 300ms var(--ease-out);}
+.save-indicator.show{opacity:1;}
+
+.tooth-selector{display:flex;flex-direction:column;gap:6px;}
+.tooth-row{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;}
+.tooth-row-label{font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:2px;}
+.tooth-btn{width:30px;height:26px;border:1px solid var(--border);border-radius:4px;background:var(--bg);font-size:10px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all 100ms var(--ease-out);font-family:var(--font);display:flex;align-items:center;justify-content:center;}
+.tooth-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tooth-btn.selected{background:var(--accent);color:oklch(98% 0.005 55);border-color:var(--accent);}
+.tooth-divider{width:1px;background:var(--border);margin:0 4px;}
+
+.edit-field{margin-bottom:12px;}
+.edit-field label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em;}
+.edit-field input,.edit-field select,.edit-field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);color:var(--text-primary);background:var(--bg);}
+.edit-field input:focus,.edit-field select:focus,.edit-field textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent;}
+.edit-actions{display:flex;gap:8px;margin-top:16px;}
+.edit-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+.photo-section{border:1px dashed var(--border);border-radius:var(--radius-md);padding:16px;text-align:center;cursor:pointer;transition:all 150ms var(--ease-out);position:relative;}
+.photo-section:hover{border-color:var(--accent);background:var(--accent-light);}
+.photo-section.has-photo{border-style:solid;cursor:default;text-align:left;padding:12px;}
+.photo-preview{width:100%;max-height:300px;object-fit:contain;border-radius:var(--radius-sm);margin-bottom:8px;}
+.photo-actions{display:flex;gap:8px;align-items:center;}
+.photo-placeholder{color:var(--text-muted);font-size:13px;padding:20px 0;}
+
+.backup-menu{position:relative;display:inline-flex;}
+.backup-dropdown{position:absolute;top:100%;right:0;margin-top:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:6px;min-width:190px;box-shadow:0 8px 24px oklch(0% 0 0 / 0.1);display:none;z-index:50;}
+.backup-dropdown.open{display:block;}
+.backup-dropdown button,.backup-dropdown a{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border:none;background:none;font-size:13px;font-family:var(--font);color:var(--text-primary);cursor:pointer;border-radius:var(--radius-sm);text-decoration:none;transition:background 100ms var(--ease-out);}
+.backup-dropdown button:hover,.backup-dropdown a:hover{background:var(--bg);}
+.backup-dropdown hr{border:none;border-top:1px solid var(--border-subtle);margin:4px 0;}
+
+.recibos-view{padding:20px 24px;height:100%;overflow-y:auto;}
+.recibos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.recibo-card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;cursor:pointer;transition:all 200ms var(--ease-out);}
+.recibo-card:hover{border-color:var(--border);box-shadow:0 4px 12px oklch(0% 0 0 / 0.06);}
+.recibo-card-img{width:100%;height:130px;object-fit:cover;display:block;background:var(--bg);}
+.recibo-card-noimg{width:100%;height:130px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);background:var(--bg);}
+.recibo-card-body{padding:12px 14px;}
+.recibo-card-num{font-size:13px;font-weight:700;color:var(--text-primary);}
+.recibo-card-date{font-size:11px;color:var(--text-muted);margin-bottom:6px;}
+.recibo-card-total{font-size:13px;font-weight:700;color:var(--status-green);}
+.recibo-empty{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.recibo-picklist{max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);}
+.recibo-pick-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border-subtle);font-size:13px;}
+.recibo-pick-item:last-child{border-bottom:none;}
+.recibo-pick-item input{width:16px;height:16px;flex-shrink:0;}
+.recibo-pick-item .rp-name{flex:1;font-weight:500;}
+.recibo-pick-item .rp-meta{color:var(--text-muted);font-size:12px;}
+.recibo-pick-item .rp-valor{font-weight:600;color:var(--status-green);}
+.recibo-doc{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;}
+.recibo-doc table{width:100%;border-collapse:collapse;margin:14px 0;}
+.recibo-doc th,.recibo-doc td{text-align:left;padding:8px;font-size:13px;border-bottom:1px solid var(--border-subtle);}
+
+.config-view{padding:20px 24px;height:100%;overflow-y:auto;}
+.config-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:14px;}
+.config-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);border-bottom:1px solid var(--border);}
+.config-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border-subtle);}
+.status-pill{display:inline-flex;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;}
+.status-pill.ativa{background:var(--status-green-bg);color:var(--status-green);}
+.status-pill.inativa{background:var(--bg);color:var(--text-muted);}
+.simple-tag-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.simple-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--border-subtle);font-size:13px;}
+.simple-tag button{width:18px;height:18px;border:none;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);}
+.icon-btn{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:none;background:var(--bg);border-radius:var(--radius-sm);cursor:pointer;color:var(--text-secondary);}
+.icon-btn:hover{background:var(--border);}
+
+@media(max-width:768px){.header{padding:12px 16px;}.nav,.subtabs{padding:8px 16px;}.kanban{padding:16px;gap:10px;}.kanban-column{min-width:230px;}.detail-panel{width:100vw;}}
+
+/* ==================== DOCUMENTOS IMPRIMÍVEIS (Recibo de Entrega / Invoice) ==================== */
+.printable-doc{display:none;background:#fff;color:#1a1a1a;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;line-height:1.6;padding:40px;max-width:800px;margin:0 auto;}
+.doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;}
+.doc-brand{display:flex;align-items:center;gap:14px;}
+.doc-brand img{width:56px;height:56px;object-fit:contain;}
+.doc-brand-text{display:flex;flex-direction:column;gap:2px;}
+.doc-brand-name{font-size:19px;font-weight:700;color:#1a3a5c;}
+.doc-brand-info{font-size:11px;color:#666;}
+.doc-title-block{text-align:right;}
+.doc-title{font-size:20px;font-weight:700;color:#1a3a5c;border-bottom:2px solid #1a3a5c;padding-bottom:6px;display:inline-block;margin-bottom:4px;}
+.doc-number{font-size:12px;color:#666;}
+.doc-parties{display:flex;justify-content:space-between;margin-bottom:26px;gap:20px;}
+.doc-party h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#888;margin-bottom:6px;}
+.doc-party p{font-size:13px;margin-bottom:2px;}
+.doc-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.doc-table th{text-align:left;padding:9px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#666;border-bottom:2px solid #ddd;background:#f8f8f8;}
+.doc-table th.num,.doc-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.doc-table td{padding:9px 10px;border-bottom:1px solid #eee;font-size:12.5px;}
+.doc-totals{display:flex;justify-content:flex-end;margin-bottom:22px;}
+.doc-totals table{border-collapse:collapse;}
+.doc-totals td{padding:4px 12px;font-size:13px;}
+.doc-totals .total-label{text-align:right;color:#666;}
+.doc-totals .total-value{text-align:right;font-weight:600;}
+.doc-totals .grand-total td{font-size:15px;font-weight:700;border-top:2px solid #ddd;padding-top:8px;}
+.doc-payment{background:#f8f8f8;border:1px solid #eee;border-radius:6px;padding:14px 16px;margin-bottom:22px;display:inline-block;}
+.doc-payment h4{font-size:10px;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:6px;}
+.doc-payment p{font-size:12px;margin-bottom:2px;}
+.doc-signature{text-align:center;margin-top:56px;}
+.doc-signature-line{width:280px;border-top:1px solid #333;margin:0 auto 6px;padding-top:8px;font-size:12px;color:#666;}
+@media print{
+  body.print-mode>*:not(.printable-doc.active-print){display:none!important;}
+  .printable-doc.active-print{display:block!important;padding:20px 40px;max-width:none;}
+  @page{margin:15mm 10mm;}
+}
+@media(max-width:768px){.printable-doc{padding:20px;}.doc-header{flex-direction:column;gap:16px;}.doc-title-block{text-align:left;}.doc-parties{flex-direction:column;gap:14px;}}
+::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left"><div class="logo">NeLab<span>Produção</span></div></div>
+  <div class="header-actions" id="header-actions"></div>
+</header>
+
+<div class="section-tabs">
+  <button class="section-tab active" data-section="producao">🏭 Produção</button>
+  <button class="section-tab" data-section="resumo">📊 Resumo</button>
+  <button class="section-tab" data-section="recibos">🧾 Recibos</button>
+  <button class="section-tab" data-section="config">⚙️ Configurações</button>
+</div>
+
+<main class="main">
+
+<!-- ===================== PRODUÇÃO ===================== -->
+<div class="section active" id="section-producao">
+  <div class="subtabs">
+    <button class="subtab active" data-sub="proteses">Próteses</button>
+    <button class="subtab" data-sub="placas">Placas</button>
+  </div>
+
+  <div class="subsection active" id="prod-proteses">
+    <nav class="nav"><button class="nav-tab active" data-view="p-kanban">Kanban</button><button class="nav-tab" data-view="p-list">Lista</button></nav>
+    <div class="kanban active" id="view-p-kanban"></div>
+    <div class="list-view" id="view-p-list"><table class="list-table"><thead><tr><th>Status</th><th>Paciente</th><th>Clínica</th><th>Tipo</th><th>Material</th><th>Cor</th><th>Etapa</th><th>Entrega</th></tr></thead><tbody id="p-list-body"></tbody></table></div>
+  </div>
+
+  <div class="subsection" id="prod-placas">
+    <nav class="nav"><button class="nav-tab active-placa" data-view="pl-kanban">Kanban</button><button class="nav-tab" data-view="pl-list">Lista</button></nav>
+    <div class="kanban active" id="view-pl-kanban"></div>
+    <div class="list-view" id="view-pl-list"><table class="list-table"><thead><tr><th>Status</th><th>Paciente</th><th>Clínica</th><th>Tipo</th><th>Qtd</th><th>Etapa</th><th>Entrega</th></tr></thead><tbody id="pl-list-body"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ===================== RESUMO ===================== -->
+<div class="section" id="section-resumo">
+  <div class="subtabs">
+    <button class="subtab active" data-sub="r-proteses">Próteses</button>
+    <button class="subtab" data-sub="r-placas">Placas</button>
+  </div>
+  <div class="subsection active" id="resumo-proteses"><div class="resumo-view" id="view-resumo-proteses"></div></div>
+  <div class="subsection" id="resumo-placas"><div class="resumo-view" id="view-resumo-placas"></div></div>
+</div>
+
+<!-- ===================== RECIBOS ===================== -->
+<div class="section" id="section-recibos">
+  <div class="subtabs">
+    <button class="subtab active" data-sub="r-lista">Recibos</button>
+    <button class="subtab" data-sub="r-entrega">Recibo de Entrega</button>
+    <button class="subtab" data-sub="r-invoice">Invoice</button>
+  </div>
+  <div class="subsection active" id="recibos-lista"><div class="recibos-view" id="view-recibos-lista"></div></div>
+  <div class="subsection" id="recibos-entrega"><div class="recibos-view" id="view-recibos-entrega"></div></div>
+  <div class="subsection" id="recibos-invoice"><div class="recibos-view" id="view-recibos-invoice"></div></div>
+</div>
+
+<!-- ===================== CONFIGURAÇÕES ===================== -->
+<div class="section" id="section-config">
+  <div class="subtabs">
+    <button class="subtab active" data-sub="c-clinicas">Clínicas</button>
+    <button class="subtab" data-sub="c-tipos">Tipos de trabalho</button>
+    <button class="subtab" data-sub="c-materiais">Materiais</button>
+    <button class="subtab" data-sub="c-cores">Cores</button>
+    <button class="subtab" data-sub="c-faturamento">Faturamento</button>
+  </div>
+  <div class="subsection active" id="config-clinicas"><div class="config-view" id="view-config-clinicas"></div></div>
+  <div class="subsection" id="config-tipos"><div class="config-view" id="view-config-tipos"></div></div>
+  <div class="subsection" id="config-materiais"><div class="config-view" id="view-config-materiais"></div></div>
+  <div class="subsection" id="config-cores"><div class="config-view" id="view-config-cores"></div></div>
+  <div class="subsection" id="config-faturamento"><div class="config-view" id="view-config-faturamento"></div></div>
+</div>
+
+</main>
+
+<div class="save-indicator" id="save-indicator">✓ Salvo</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap" id="detail-meta-row"></div><h2 style="font-size:1.125rem;font-weight:700" id="detail-patient"></h2></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" id="edit-toggle-btn" onclick="toggleEdit()">✏️ Editar</button><button class="detail-close" onclick="closeDetail()">✕</button></div>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+  <div class="detail-footer" id="detail-footer">
+    <div class="confirm-bar" id="confirm-delete"><span>Excluir?</span><button class="confirm-btn confirm-btn-no" onclick="cancelDelete()">Não</button><button class="confirm-btn confirm-btn-yes" onclick="confirmDelete()">Excluir</button></div>
+    <button class="btn btn-danger" id="delete-btn" onclick="startDelete()">🗑️ Excluir</button>
+  </div>
+</div>
+
+<!-- NOVO TRABALHO (PRÓTESE) -->
+<div class="modal-overlay" id="new-protese-modal"><div class="modal modal-wide"><h2>Novo trabalho</h2>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Paciente</label><input type="text" class="form-input" id="np-patient" placeholder="Nome do paciente"></div>
+    <div class="form-group"><label class="form-label">Clínica</label><select class="form-select" id="np-clinica"></select></div>
+  </div>
+  <div class="form-group"><label class="form-label">Tipo de trabalho</label><select class="form-select" id="np-tipo" onchange="onTipoChangeProtese()"></select></div>
+  <div class="form-group"><label class="form-label">Dentes (até 8)</label><div class="tooth-selector" id="np-teeth"></div></div>
+  <div class="form-row-3">
+    <div class="form-group"><label class="form-label">Material</label><select class="form-select" id="np-material"></select></div>
+    <div class="form-group"><label class="form-label">Cor</label><select class="form-select" id="np-cor"></select></div>
+    <div class="form-group"><label class="form-label">Elementos</label><input type="number" class="form-input" id="np-elements" value="1" min="1"></div>
+  </div>
+  <div class="form-row-3">
+    <div class="form-group"><label class="form-label">Valor</label><input type="number" class="form-input" id="np-valor" step="0.01" min="0"></div>
+    <div class="form-group"><label class="form-label">Comissão</label><input type="number" class="form-input" id="np-comissao" step="0.01" min="0"></div>
+    <div class="form-group"><label class="form-label">Tem modelo?</label><div class="toggle-group" id="np-modelo"><button type="button" class="toggle-btn selected" data-val="nao">Não</button><button type="button" class="toggle-btn" data-val="sim">Sim</button></div></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label class="form-label">Data de cadastro</label><input type="date" class="form-input" id="np-entry"></div>
+    <div class="form-group"><label class="form-label">Data prevista de entrega</label><input type="date" class="form-input" id="np-due"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="detail-notes" id="np-notes" rows="2" placeholder="Opcional..."></textarea></div>
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('new-protese-modal')">Cancelar</button><button class="btn btn-primary" onclick="createProtese()">Criar</button></div>
+</div></div>
+
+<!-- NOVA PLACA -->
+<div class="modal-overlay" id="new-placa-modal"><div class="modal"><h2>Nova placa</h2>
+  <div class="form-group"><label class="form-label">Paciente</label><input type="text" class="form-input" id="npl-patient" placeholder="Nome do paciente"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Clínica</label><select class="form-select" id="npl-clinica"></select></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="npl-tipo" onchange="onTipoChangePlaca()"></select></div></div>
+  <div class="form-row-3">
+    <div class="form-group"><label class="form-label">Quantidade</label><input type="number" class="form-input" id="npl-qty" value="1" min="1"></div>
+    <div class="form-group"><label class="form-label">Valor</label><input type="number" class="form-input" id="npl-valor" step="0.01" min="0"></div>
+    <div class="form-group"><label class="form-label">Comissão</label><input type="number" class="form-input" id="npl-comissao" step="0.01" min="0"></div>
+  </div>
+  <div class="form-group"><label class="form-label">Observações</label><textarea class="detail-notes" id="npl-notes" rows="2" placeholder="Opcional..."></textarea></div>
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('new-placa-modal')">Cancelar</button><button class="btn btn-placa" onclick="createPlaca()">Criar</button></div>
+</div></div>
+
+<!-- CLÍNICA MODAL -->
+<div class="modal-overlay" id="clinica-modal"><div class="modal"><h2 id="clinica-modal-title">Nova clínica</h2>
+  <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" id="cl-nome"></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Telefone</label><input type="text" class="form-input" id="cl-telefone"></div><div class="form-group"><label class="form-label">Cidade</label><input type="text" class="form-input" id="cl-cidade"></div></div>
+  <div class="form-group"><label class="form-label">Endereço completo (para invoice/recibo)</label><textarea class="detail-notes" id="cl-endereco" rows="2" placeholder="Rua, número, bairro, cidade, CEP..."></textarea></div>
+  <div class="form-group"><label class="form-label">Status</label><div class="toggle-group" id="cl-status"><button type="button" class="toggle-btn selected" data-val="ativa">Ativa</button><button type="button" class="toggle-btn" data-val="inativa">Inativa</button></div></div>
+  <input type="hidden" id="cl-id">
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('clinica-modal')">Cancelar</button><button class="btn btn-primary" onclick="saveClinica()">Salvar</button></div>
+</div></div>
+
+<!-- TIPO MODAL -->
+<div class="modal-overlay" id="tipo-modal"><div class="modal"><h2 id="tipo-modal-title">Novo tipo de trabalho</h2>
+  <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" id="tp-nome"></div>
+  <div class="form-group"><label class="form-label">Categoria</label><div class="toggle-group" id="tp-categoria"><button type="button" class="toggle-btn selected" data-val="Prótese">Prótese</button><button type="button" class="toggle-btn" data-val="Placa">Placa</button></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">Valor de venda</label><input type="number" class="form-input" id="tp-valor" step="0.01" min="0"></div><div class="form-group"><label class="form-label">Comissão</label><input type="number" class="form-input" id="tp-comissao" step="0.01" min="0"></div></div>
+  <input type="hidden" id="tp-id">
+  <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('tipo-modal')">Cancelar</button><button class="btn btn-primary" onclick="saveTipo()">Salvar</button></div>
+</div></div>
+
+<!-- RECIBO PHOTO / VIEW MODAL -->
+<div class="modal-overlay" id="photo-modal"><div class="modal" style="max-width:600px"><h2>Foto</h2><img id="photo-modal-img" style="width:100%;border-radius:var(--radius-sm)" src="" alt=""><div class="modal-actions" style="margin-top:16px"><button class="btn btn-ghost" onclick="closeModal('photo-modal')">Fechar</button></div></div></div>
+
+<!-- RECIBO DETAIL MODAL -->
+<div class="modal-overlay" id="recibo-detail-modal"><div class="modal modal-wide" id="recibo-detail-content"></div></div>
+
+<input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="importBackup(event)">
+
+<script>const NELAB_LOGO_B64='data:image/png;base64,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';</script>
+
+<!-- DOCUMENTO IMPRIMÍVEL: RECIBO DE ENTREGA -->
+<div class="printable-doc" id="doc-recibo-entrega">
+  <div class="doc-header">
+    <div class="doc-brand"><img src="" id="de-logo"><div class="doc-brand-text"><div class="doc-brand-name">NeLab</div><div class="doc-brand-info" id="de-brand-info"></div></div></div>
+    <div class="doc-title-block"><div class="doc-title">RECIBO DE ENTREGA</div><div class="doc-number" id="de-number"></div></div>
+  </div>
+  <div class="doc-parties">
+    <div class="doc-party"><h4>Entregue para</h4><div id="de-client"></div></div>
+    <div class="doc-party" style="text-align:right"><h4>Data da entrega</h4><div id="de-date" style="font-weight:700;font-size:14px"></div></div>
+  </div>
+  <table class="doc-table"><thead><tr><th>Nº</th><th>Paciente</th><th>Trabalho</th><th class="num">Qtd</th></tr></thead><tbody id="de-items"></tbody></table>
+  <div class="doc-signature"><div class="doc-signature-line">Assinatura de quem recebeu</div></div>
+</div>
+
+<!-- DOCUMENTO IMPRIMÍVEL: INVOICE -->
+<div class="printable-doc" id="doc-invoice">
+  <div class="doc-header">
+    <div class="doc-brand"><img src="" id="inv-logo"><div class="doc-brand-text"><div class="doc-brand-name" id="inv-brand-name">NeLab</div><div class="doc-brand-info" id="inv-brand-info"></div></div></div>
+    <div class="doc-title-block"><div class="doc-title">INVOICE</div><div class="doc-number" id="inv-number"></div></div>
+  </div>
+  <div class="doc-parties">
+    <div class="doc-party"><h4>Faturar para</h4><div id="inv-client"></div></div>
+    <div class="doc-party" style="text-align:right"><h4>Data</h4><div id="inv-date" style="font-weight:700;font-size:14px"></div></div>
+  </div>
+  <table class="doc-table"><thead><tr><th>Nº</th><th>Paciente / Item</th><th class="num">Qtd</th><th class="num">Valor unit.</th><th class="num">Total</th></tr></thead><tbody id="inv-items"></tbody></table>
+  <div class="doc-totals"><table><tbody id="inv-totals"></tbody></table></div>
+  <div class="doc-payment" id="inv-payment"></div>
+  <div class="doc-signature"><div class="doc-signature-line">Assinatura</div></div>
+</div>
+
+
+<script>
+/* ==================== CONSTANTES ==================== */
+const P_STAGES=['Recebido','Desenho','Fresagem/Impressão','Acabamento','Prova','Finalizado'];
+const P_STAGE_COLORS={'Recebido':'var(--stage-recebido)','Desenho':'var(--stage-desenho)','Fresagem/Impressão':'var(--stage-impressao)','Acabamento':'var(--stage-maquiagem)','Prova':'var(--stage-modelo)','Finalizado':'var(--stage-pronto)'};
+const P_ES='Finalizado';
+const PL_STAGES=['Recebido','Limpeza','Confecção','Corte','Entregue'];
+const PL_STAGE_COLORS={'Recebido':'var(--stage-recebido)','Limpeza':'var(--stage-limpeza)','Confecção':'var(--stage-confeccao)','Corte':'var(--stage-corte)','Entregue':'var(--stage-entregue)'};
+const PL_ES='Entregue';
+const STORAGE_KEY='nelab-producao-v3';
+
+/* ==================== ESTADO ==================== */
+let config={clinicas:[],tipos:[],materiais:[],cores:[],faturamento:{}};
+let proteses=[],placas=[],recibos=[],invoices=[];
+let nextIds={protese:1,placa:1,recibo:1,clinica:1,tipo:1,material:1,cor:1,invoice:1};
+let currentTopSection='producao';
+let currentProducaoSub='proteses';
+let currentDetailType=null,currentDetailId=null,isEditing=false;
+let selectedTeeth=[];
+let pResumoMonth='all',plResumoMonth='all';
+let reciboSelection=new Set();
+let deMonth='all',deClinica=null;
+let invMonth='all',invClinica=null;
+
+function seedDefaults(){
+  config.clinicas=[
+    {id:1,nome:'Oral Fácil Prime',telefone:'',cidade:'',endereco:'Av. Caraíbas, 378 - Centro\nIrecê - Bahia\n44900-000',ativa:true},
+    {id:2,nome:'Oral Fácil Dentista',telefone:'',cidade:'',endereco:'Irecê - Bahia',ativa:true}
+  ];
+  config.tipos=[
+    {id:1,nome:'Bloco',categoria:'Prótese',valorVenda:200,comissao:15},
+    {id:2,nome:'Provisório',categoria:'Prótese',valorVenda:150,comissao:15},
+    {id:3,nome:'Provisório Oco',categoria:'Prótese',valorVenda:180,comissao:15},
+    {id:4,nome:'Tabletop',categoria:'Prótese',valorVenda:220,comissao:15},
+    {id:5,nome:'Coroa Zircônia',categoria:'Prótese',valorVenda:250,comissao:30},
+    {id:6,nome:'Protocolo',categoria:'Prótese',valorVenda:2500,comissao:200},
+    {id:7,nome:'Barra',categoria:'Prótese',valorVenda:800,comissao:150},
+    {id:8,nome:'Placa de Clareamento',categoria:'Placa',valorVenda:0,comissao:10},
+    {id:9,nome:'Placa de Bruxismo',categoria:'Placa',valorVenda:0,comissao:10}
+  ];
+  config.materiais=[{id:1,nome:'Zircônia'},{id:2,nome:'Dissilicato'},{id:3,nome:'PMMA'},{id:4,nome:'Resina'},{id:5,nome:'Metal'},{id:6,nome:'Cerômero'}];
+  const corNames=['A1','A2','A3','A3.5','A4','B1','B2','B3','B4','C1','C2','C3','C4','D2','D3','D4','BL1','BL2','BL3','BL4','OM1','OM2','OM3','Outro'];
+  config.cores=corNames.map((n,i)=>({id:i+1,nome:n}));
+  config.faturamento={
+    razaoSocial:'NeLab',
+    endereco:'Bahia, Brasil',
+    email:'nelabirece@gmail.com',
+    pixKey:'nelabirece@gmail.com',
+    titular:'ELLIF SOUZA NASCIMENTO',
+    banco:'Next 237',
+    agencia:'3925',
+    conta:'226211-8'
+  };
+  nextIds={protese:1,placa:1,recibo:1,clinica:3,tipo:10,material:7,cor:corNames.length+1,invoice:1};
+}
+
+/* ==================== HELPERS ==================== */
+function money(v){return'R$ '+(parseFloat(v)||0).toFixed(2).replace('.',',');}
+function formatDate(s){if(!s)return'—';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});}
+function monthKey(dateStr){if(!dateStr)return'';return dateStr.slice(0,7);}
+function monthLabel(mk){if(!mk)return'';const[y,m]=mk.split('-');const d=new Date(parseInt(y),parseInt(m)-1,1);return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});}
+function addBusinessDays(s,days){const d=new Date(s+'T00:00:00');let added=0;while(added<days){d.setDate(d.getDate()+1);if(d.getDay()!==0&&d.getDay()!==6)added++;}return d.toISOString().split('T')[0];}
+function getClinica(id){return config.clinicas.find(c=>c.id===id);}
+function getTipo(id){return config.tipos.find(t=>t.id===id);}
+function getMaterialName(id){const m=config.materiais.find(x=>x.id===id);return m?m.nome:'';}
+function getCorName(id){const c=config.cores.find(x=>x.id===id);return c?c.nome:'';}
+function clinicaClass(clinicaId){return clinicaId===1?'prime':'dentista';}
+function clinicaShort(nome){if(!nome)return'—';return nome.replace('Oral Fácil ','');}
+function getStatus(stage,dueDate,es){if(stage===es)return'blue';const today=new Date();today.setHours(0,0,0,0);const due=new Date(dueDate+'T00:00:00');const diff=Math.ceil((due-today)/86400000);if(diff<0)return'red';if(diff<=2)return'yellow';return'green';}
+function getLabel(stage,dueDate,es){if(stage===es)return{text:'Entregue',class:'delivered'};const today=new Date();today.setHours(0,0,0,0);const due=new Date(dueDate+'T00:00:00');const diff=Math.ceil((due-today)/86400000);if(diff<0)return{text:`${Math.abs(diff)}d atrasado`,class:'overdue'};if(diff===0)return{text:'Vence hoje',class:'soon'};if(diff<=2)return{text:`Vence em ${diff}d`,class:'soon'};return{text:formatDate(dueDate),class:'ontime'};}
+function formatTeeth(teeth){if(!teeth||!teeth.length)return'';return[...teeth].sort((a,b)=>parseInt(a)-parseInt(b)).join(', ');}
+function compressImage(file,maxW,quality,cb){const reader=new FileReader();reader.onload=function(e){const img=new Image();img.onload=function(){const canvas=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW;}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);cb(canvas.toDataURL('image/jpeg',quality));};img.src=e.target.result;};reader.readAsDataURL(file);}
+function viewPhoto(src){document.getElementById('photo-modal-img').src=src;document.getElementById('photo-modal').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function showSaveIndicator(){const el=document.getElementById('save-indicator');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500);}
+
+/* ==================== SAVE / LOAD ==================== */
+function saveData(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({config,proteses,placas,recibos,invoices,nextIds}));
+    showSaveIndicator();
+  }catch(e){alert('Armazenamento cheio! Exporte o backup e limpe trabalhos/recibos antigos.');}
+}
+function loadData(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const d=JSON.parse(raw);
+      config=d.config||{clinicas:[],tipos:[],materiais:[],cores:[],faturamento:{}};
+      if(!config.faturamento)config.faturamento={};
+      proteses=d.proteses||[];placas=d.placas||[];recibos=d.recibos||[];invoices=d.invoices||[];
+      nextIds=d.nextIds||{protese:1,placa:1,recibo:1,clinica:1,tipo:1,material:1,cor:1,invoice:1};
+      if(!nextIds.invoice)nextIds.invoice=1;
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+/* ==================== BACKUP ==================== */
+function exportBackup(){
+  const data=JSON.stringify({config,proteses,placas,recibos,invoices,nextIds,exportDate:new Date().toISOString()});
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`nelab-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();URL.revokeObjectURL(url);
+  closeBackupMenu();
+}
+function triggerImport(){document.getElementById('backup-file-input').click();closeBackupMenu();}
+function importBackup(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.proteses!==undefined&&data.placas!==undefined){
+        const count=(data.proteses||[]).length+(data.placas||[]).length+(data.recibos||[]).length+(data.invoices||[]).length;
+        if(confirm(`Importar backup com ${count} itens (trabalhos + recibos + invoices)? Isso substitui todos os dados atuais, incluindo configurações.`)){
+          config=data.config||config;
+          if(!config.faturamento)config.faturamento={};
+          proteses=data.proteses||[];placas=data.placas||[];recibos=data.recibos||[];invoices=data.invoices||[];
+          nextIds=data.nextIds||nextIds;
+          if(!nextIds.invoice)nextIds.invoice=1;
+          saveData();renderEverything();
+          alert('Backup importado com sucesso!');
+        }
+      }else{alert('Arquivo inválido.');}
+    }catch(err){alert('Erro ao ler o arquivo.');}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+function toggleBackupMenu(){document.getElementById('backup-dropdown').classList.toggle('open');}
+function closeBackupMenu(){document.getElementById('backup-dropdown').classList.remove('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.backup-menu'))closeBackupMenu();});
+
+/* ==================== HEADER ==================== */
+function updateHeaderBtn(){
+  const ha=document.getElementById('header-actions');
+  let btns=`<div class="backup-menu"><button class="btn btn-ghost btn-sm" onclick="toggleBackupMenu()">⚙️</button><div class="backup-dropdown" id="backup-dropdown"><button onclick="exportBackup()">⬇️ Exportar Backup</button><button onclick="triggerImport()">⬆️ Importar Backup</button></div></div>`;
+  if(currentTopSection==='producao'){
+    if(currentProducaoSub==='proteses'){btns+=`<button class="btn btn-primary" onclick="openNewProtese()">+ Novo trabalho</button>`;}
+    else{btns+=`<button class="btn btn-placa" onclick="openNewPlaca()">+ Nova placa</button>`;}
+  }
+  ha.innerHTML=btns;
+}
+
+/* ==================== TOP SECTION NAV ==================== */
+document.querySelectorAll('.section-tabs .section-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.section-tabs .section-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.main > .section').forEach(s=>s.classList.remove('active'));
+    const sec=tab.dataset.section;
+    currentTopSection=sec;
+    document.getElementById('section-'+sec).classList.add('active');
+    if(sec==='resumo'){renderResumoProteses();renderResumoPlacas();}
+    if(sec==='recibos'){renderRecibosLista();renderRecibosEntrega();renderRecibosInvoice();}
+    if(sec==='config'){renderConfigClinicas();renderConfigTipos();renderConfigMateriais();renderConfigCores();renderConfigFaturamento();}
+  });
+});
+
+function wireSubtabs(containerSel,onSwitch){
+  document.querySelectorAll(containerSel+' .subtab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      const group=tab.closest('.section');
+      group.querySelectorAll(':scope > .subtabs .subtab').forEach(t=>t.classList.remove('active','active-placa'));
+      const sub=tab.dataset.sub;
+      const placaLike=sub.includes('placa')||sub==='pl';
+      tab.classList.add(placaLike?'active-placa':'active');
+      group.querySelectorAll(':scope > .subsection').forEach(s=>s.classList.remove('active'));
+      onSwitch(sub,group);
+    });
+  });
+}
+wireSubtabs('#section-producao',(sub,group)=>{
+  const target=sub==='proteses'?'prod-proteses':'prod-placas';
+  document.getElementById(target).classList.add('active');
+  currentProducaoSub=sub;
+  updateHeaderBtn();
+});
+wireSubtabs('#section-resumo',(sub,group)=>{
+  const target=sub==='r-proteses'?'resumo-proteses':'resumo-placas';
+  document.getElementById(target).classList.add('active');
+});
+wireSubtabs('#section-recibos',(sub,group)=>{
+  const map={'r-lista':'recibos-lista','r-entrega':'recibos-entrega','r-invoice':'recibos-invoice'};
+  document.getElementById(map[sub]).classList.add('active');
+  if(sub==='r-entrega')renderRecibosEntrega();
+  if(sub==='r-invoice')renderRecibosInvoice();
+});
+wireSubtabs('#section-config',(sub,group)=>{
+  const map={'c-clinicas':'config-clinicas','c-tipos':'config-tipos','c-materiais':'config-materiais','c-cores':'config-cores','c-faturamento':'config-faturamento'};
+  document.getElementById(map[sub]).classList.add('active');
+  if(sub==='c-faturamento')renderConfigFaturamento();
+});
+
+document.querySelectorAll('#prod-proteses .nav-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('#prod-proteses .nav-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('#prod-proteses .kanban,#prod-proteses .list-view').forEach(el=>el.classList.remove('active'));
+    document.getElementById('view-'+tab.dataset.view).classList.add('active');
+  });
+});
+document.querySelectorAll('#prod-placas .nav-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('#prod-placas .nav-tab').forEach(t=>t.classList.remove('active','active-placa'));
+    tab.classList.add('active-placa');
+    document.querySelectorAll('#prod-placas .kanban,#prod-placas .list-view').forEach(el=>el.classList.remove('active'));
+    document.getElementById('view-'+tab.dataset.view).classList.add('active');
+  });
+});
+
+/* ==================== TOOTH SELECTOR ==================== */
+function buildToothSelector(containerId,preselected){
+  const c=document.getElementById(containerId);
+  const upper=[18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28];
+  const lower=[48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38];
+  function row(nums,label){
+    let h=`<div class="tooth-row-label">${label}</div><div class="tooth-row">`;
+    nums.forEach((t,i)=>{
+      if(i===8)h+='<span class="tooth-divider"></span>';
+      const sel=(preselected||[]).includes(String(t))?'selected':'';
+      h+=`<button type="button" class="tooth-btn ${sel}" data-tooth="${t}">${t}</button>`;
+    });
+    h+='</div>';return h;
+  }
+  c.innerHTML=row(upper,'Superior')+row(lower,'Inferior');
+  const sel=[...(preselected||[])];
+  c.querySelectorAll('.tooth-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.preventDefault();
+      const t=btn.dataset.tooth;
+      if(btn.classList.contains('selected')){btn.classList.remove('selected');const idx=sel.indexOf(t);if(idx>-1)sel.splice(idx,1);}
+      else{if(sel.length>=8)return;btn.classList.add('selected');sel.push(t);}
+      c.dataset.selected=JSON.stringify(sel);
+      const elInput=c===document.getElementById('np-teeth')?document.getElementById('np-elements'):document.getElementById('ed-elements');
+      if(elInput&&sel.length>0)elInput.value=sel.length;
+    });
+  });
+  c.dataset.selected=JSON.stringify(sel);
+}
+function getToothSelection(containerId){try{return JSON.parse(document.getElementById(containerId).dataset.selected||'[]');}catch(e){return[];}}
+
+/* ==================== SELECTS (dinâmicos) ==================== */
+function fillClinicaSelect(sel,onlyActive){
+  sel.innerHTML=config.clinicas.filter(c=>!onlyActive||c.ativa).map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+}
+function fillTipoSelect(sel,categoria){
+  sel.innerHTML=config.tipos.filter(t=>t.categoria===categoria).map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');
+}
+function fillMaterialSelect(sel){sel.innerHTML=config.materiais.map(m=>`<option value="${m.id}">${m.nome}</option>`).join('');}
+function fillCorSelect(sel){sel.innerHTML=config.cores.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');}
+
+function onTipoChangeProtese(){
+  const tipoId=parseInt(document.getElementById('np-tipo').value);
+  const tipo=getTipo(tipoId);
+  if(tipo){document.getElementById('np-valor').value=tipo.valorVenda;document.getElementById('np-comissao').value=tipo.comissao;}
+}
+function onTipoChangePlaca(){
+  const tipoId=parseInt(document.getElementById('npl-tipo').value);
+  const tipo=getTipo(tipoId);
+  const qty=parseInt(document.getElementById('npl-qty').value)||1;
+  if(tipo){document.getElementById('npl-valor').value=(tipo.valorVenda*qty).toFixed(2);document.getElementById('npl-comissao').value=(tipo.comissao*qty).toFixed(2);}
+}
+
+function wireToggleGroup(id){
+  document.querySelectorAll('#'+id+' .toggle-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#'+id+' .toggle-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+}
+function getToggleValue(id){const sel=document.querySelector('#'+id+' .toggle-btn.selected');return sel?sel.dataset.val:null;}
+function setToggleValue(id,val){document.querySelectorAll('#'+id+' .toggle-btn').forEach(b=>b.classList.toggle('selected',b.dataset.val===val));}
+wireToggleGroup('np-modelo');
+wireToggleGroup('cl-status');
+wireToggleGroup('tp-categoria');
+
+/* ==================== NOVO TRABALHO (PRÓTESE) ==================== */
+function openNewProtese(){
+  document.getElementById('np-patient').value='';
+  document.getElementById('np-notes').value='';
+  fillClinicaSelect(document.getElementById('np-clinica'),true);
+  fillTipoSelect(document.getElementById('np-tipo'),'Prótese');
+  fillMaterialSelect(document.getElementById('np-material'));
+  fillCorSelect(document.getElementById('np-cor'));
+  buildToothSelector('np-teeth',[]);
+  document.getElementById('np-elements').value=1;
+  onTipoChangeProtese();
+  setToggleValue('np-modelo','nao');
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('np-entry').value=today;
+  document.getElementById('np-due').value=addBusinessDays(today,5);
+  document.getElementById('new-protese-modal').classList.add('open');
+  document.getElementById('np-patient').focus();
+}
+function createProtese(){
+  const patient=document.getElementById('np-patient').value.trim();
+  if(!patient){document.getElementById('np-patient').style.borderColor='var(--status-red)';return;}
+  const teeth=getToothSelection('np-teeth');
+  const entryDate=document.getElementById('np-entry').value||new Date().toISOString().split('T')[0];
+  const dueDate=document.getElementById('np-due').value||addBusinessDays(entryDate,5);
+  proteses.push({
+    id:nextIds.protese++,patient,
+    clinicaId:parseInt(document.getElementById('np-clinica').value),
+    tipoId:parseInt(document.getElementById('np-tipo').value),
+    teeth,
+    materialId:parseInt(document.getElementById('np-material').value),
+    corId:parseInt(document.getElementById('np-cor').value),
+    elements:parseInt(document.getElementById('np-elements').value)||1,
+    valor:parseFloat(document.getElementById('np-valor').value)||0,
+    comissao:parseFloat(document.getElementById('np-comissao').value)||0,
+    temModelo:getToggleValue('np-modelo')==='sim',
+    entryDate,dueDate,deliveredDate:null,
+    stage:'Recebido',
+    notes:document.getElementById('np-notes').value.trim()
+  });
+  closeModal('new-protese-modal');
+  renderProdutionProteses();saveData();
+}
+
+/* ==================== NOVA PLACA ==================== */
+function openNewPlaca(){
+  document.getElementById('npl-patient').value='';
+  document.getElementById('npl-notes').value='';
+  fillClinicaSelect(document.getElementById('npl-clinica'),true);
+  fillTipoSelect(document.getElementById('npl-tipo'),'Placa');
+  document.getElementById('npl-qty').value=1;
+  onTipoChangePlaca();
+  document.getElementById('new-placa-modal').classList.add('open');
+  document.getElementById('npl-patient').focus();
+}
+document.getElementById('npl-qty').addEventListener('input',onTipoChangePlaca);
+function createPlaca(){
+  const patient=document.getElementById('npl-patient').value.trim();
+  if(!patient){document.getElementById('npl-patient').style.borderColor='var(--status-red)';return;}
+  const entryDate=new Date().toISOString().split('T')[0];
+  const dueDate=addBusinessDays(entryDate,5);
+  placas.push({
+    id:nextIds.placa++,patient,
+    clinicaId:parseInt(document.getElementById('npl-clinica').value),
+    tipoId:parseInt(document.getElementById('npl-tipo').value),
+    qty:parseInt(document.getElementById('npl-qty').value)||1,
+    valor:parseFloat(document.getElementById('npl-valor').value)||0,
+    comissao:parseFloat(document.getElementById('npl-comissao').value)||0,
+    entryDate,dueDate,deliveredDate:null,
+    stage:'Recebido',
+    notes:document.getElementById('npl-notes').value.trim()
+  });
+  closeModal('new-placa-modal');
+  renderProdutionPlacas();saveData();
+}
+
+/* ==================== RENDER: PRODUÇÃO - PRÓTESES ==================== */
+function renderProdutionProteses(){
+  const kb=document.getElementById('view-p-kanban');kb.innerHTML='';
+  P_STAGES.forEach(stage=>{
+    const items=proteses.filter(w=>w.stage===stage);
+    kb.innerHTML+=`<div class="kanban-column"><div class="column-header"><div class="column-title"><span class="column-dot" style="background:${P_STAGE_COLORS[stage]}"></span>${stage}</div><span class="column-count">${items.length}</span></div><div class="column-cards" data-stage="${stage}" data-section="protese">${items.map(renderPCard).join('')}</div></div>`;
+  });
+  document.getElementById('p-list-body').innerHTML=proteses.map(pListRow).join('')||'<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhum trabalho cadastrado</td></tr>';
+  setupDrag();
+}
+function renderPCard(w){
+  const st=getStatus(w.stage,w.dueDate,P_ES);
+  const lb=getLabel(w.stage,w.dueDate,P_ES);
+  const clinica=getClinica(w.clinicaId);
+  const tipo=getTipo(w.tipoId);
+  const material=getMaterialName(w.materialId);
+  const cor=getCorName(w.corId);
+  return`<div class="card" draggable="true" data-id="${w.id}" data-section="protese" onclick="openDetail('protese',${w.id})">
+    <div class="card-status-indicator ${st}"></div>
+    <div class="card-patient">${w.patient}</div>
+    <div class="card-clinic">${clinica?clinica.nome:'—'}</div>
+    <div class="card-line">${tipo?tipo.nome:'—'} • ${material} • ${cor}</div>
+    <div class="card-modelo ${w.temModelo?'sim':''}">Modelo: ${w.temModelo?'Sim':'Não'}</div>
+    <div class="card-line">${w.elements} elemento${w.elements>1?'s':''}</div>
+    <div class="card-due ${lb.class}">${lb.text==='Entregue'?'✅':'🕒'} Entrega: ${lb.text==='Entregue'?formatDate(w.deliveredDate):lb.text}</div>
+  </div>`;
+}
+function pListRow(w){
+  const st=getStatus(w.stage,w.dueDate,P_ES);
+  const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+  return`<tr onclick="openDetail('protese',${w.id})" style="cursor:pointer"><td><span class="status-dot" style="background:var(--status-${st})"></span></td><td style="font-weight:500">${w.patient}</td><td>${clinica?clinica.nome:'—'}</td><td>${tipo?tipo.nome:'—'}</td><td>${getMaterialName(w.materialId)}</td><td>${getCorName(w.corId)}</td><td><span class="stage-badge" style="background:${P_STAGE_COLORS[w.stage]}22;color:${P_STAGE_COLORS[w.stage]}">${w.stage}</span></td><td>${formatDate(w.dueDate)}</td></tr>`;
+}
+
+/* ==================== RENDER: PRODUÇÃO - PLACAS ==================== */
+function renderProdutionPlacas(){
+  const kb=document.getElementById('view-pl-kanban');kb.innerHTML='';
+  PL_STAGES.forEach(stage=>{
+    const items=placas.filter(w=>w.stage===stage);
+    kb.innerHTML+=`<div class="kanban-column"><div class="column-header"><div class="column-title"><span class="column-dot" style="background:${PL_STAGE_COLORS[stage]}"></span>${stage}</div><span class="column-count">${items.length}</span></div><div class="column-cards" data-stage="${stage}" data-section="placa">${items.map(renderPlCard).join('')}</div></div>`;
+  });
+  document.getElementById('pl-list-body').innerHTML=placas.map(plListRow).join('')||'<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma placa cadastrada</td></tr>';
+  setupDrag();
+}
+function renderPlCard(w){
+  const st=getStatus(w.stage,w.dueDate,PL_ES);
+  const lb=getLabel(w.stage,w.dueDate,PL_ES);
+  const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+  return`<div class="card" draggable="true" data-id="${w.id}" data-section="placa" onclick="openDetail('placa',${w.id})">
+    <div class="card-status-indicator ${st}"></div>
+    <div class="card-patient">${w.patient}</div>
+    <div class="card-clinic">${clinica?clinica.nome:'—'}</div>
+    <div class="card-line">${tipo?tipo.nome:'—'} • ${w.qty}x</div>
+    <div class="card-due ${lb.class}">${lb.text==='Entregue'?'✅':'🕒'} Entrega: ${lb.text==='Entregue'?formatDate(w.deliveredDate):lb.text}</div>
+  </div>`;
+}
+function plListRow(w){
+  const st=getStatus(w.stage,w.dueDate,PL_ES);
+  const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+  return`<tr onclick="openDetail('placa',${w.id})" style="cursor:pointer"><td><span class="status-dot" style="background:var(--status-${st})"></span></td><td style="font-weight:500">${w.patient}</td><td>${clinica?clinica.nome:'—'}</td><td>${tipo?tipo.nome:'—'}</td><td>${w.qty}</td><td><span class="stage-badge" style="background:${PL_STAGE_COLORS[w.stage]}22;color:${PL_STAGE_COLORS[w.stage]}">${w.stage}</span></td><td>${formatDate(w.dueDate)}</td></tr>`;
+}
+
+/* ==================== DRAG & DROP ==================== */
+function setupDrag(){
+  document.querySelectorAll('.card[draggable]').forEach(card=>{
+    card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',card.dataset.id+'|'+card.dataset.section);card.style.opacity='0.5';});
+    card.addEventListener('dragend',()=>{card.style.opacity='1';});
+  });
+  document.querySelectorAll('.column-cards').forEach(col=>{
+    col.addEventListener('dragover',e=>{e.preventDefault();col.style.background='oklch(95% 0.01 55)';});
+    col.addEventListener('dragleave',()=>{col.style.background='';});
+    col.addEventListener('drop',e=>{
+      e.preventDefault();col.style.background='';
+      const[idStr,section]=e.dataTransfer.getData('text/plain').split('|');
+      const id=parseInt(idStr);const newStage=col.dataset.stage;
+      let work;const es=section==='protese'?P_ES:PL_ES;
+      if(section==='protese')work=proteses.find(w=>w.id===id);else work=placas.find(w=>w.id===id);
+      if(work){
+        work.stage=newStage;
+        if(newStage===es&&!work.deliveredDate)work.deliveredDate=new Date().toISOString().split('T')[0];
+        if(newStage!==es)work.deliveredDate=work.deliveredDate;
+        if(section==='protese')renderProdutionProteses();else renderProdutionPlacas();
+        saveData();
+      }
+    });
+  });
+}
+
+/* ==================== DETAIL PANEL ==================== */
+function openDetail(type,id){
+  currentDetailType=type;currentDetailId=id;isEditing=false;
+  document.getElementById('edit-toggle-btn').innerHTML='✏️ Editar';
+  renderDetailView();
+  document.getElementById('confirm-delete').classList.remove('visible');
+  document.getElementById('delete-btn').style.display='';
+  document.getElementById('detail-overlay').classList.add('open');
+  document.getElementById('detail-panel').classList.add('open');
+}
+function getWork(type,id){return type==='protese'?proteses.find(w=>w.id===id):placas.find(w=>w.id===id);}
+function renderDetailView(){
+  const type=currentDetailType,id=currentDetailId;
+  const work=getWork(type,id);if(!work)return;
+  const clinica=getClinica(work.clinicaId);const tipo=getTipo(work.tipoId);
+  let metaHtml=`<span class="stage-badge" style="background:var(--bg);color:var(--text-secondary)">${tipo?tipo.nome:'—'}</span>`;
+  document.getElementById('detail-meta-row').innerHTML=metaHtml;
+  document.getElementById('detail-patient').textContent=work.patient;
+  let b='<div><div class="detail-section-title">Informações</div>';
+  b+=`<div class="detail-field"><span class="detail-field-label">Clínica</span><span class="detail-field-value">${clinica?clinica.nome:'—'}</span></div>`;
+  if(type==='protese'){
+    b+=`<div class="detail-field"><span class="detail-field-label">Dentes</span><span class="detail-field-value">${formatTeeth(work.teeth)||'—'}</span></div>`;
+    b+=`<div class="detail-field"><span class="detail-field-label">Material</span><span class="detail-field-value">${getMaterialName(work.materialId)}</span></div>`;
+    b+=`<div class="detail-field"><span class="detail-field-label">Cor</span><span class="detail-field-value">${getCorName(work.corId)}</span></div>`;
+    b+=`<div class="detail-field"><span class="detail-field-label">Elementos</span><span class="detail-field-value">${work.elements}</span></div>`;
+    b+=`<div class="detail-field"><span class="detail-field-label">Tem modelo?</span><span class="detail-field-value">${work.temModelo?'Sim':'Não'}</span></div>`;
+  }else{
+    b+=`<div class="detail-field"><span class="detail-field-label">Quantidade</span><span class="detail-field-value">${work.qty} placa${work.qty>1?'s':''}</span></div>`;
+  }
+  b+=`<div class="detail-field"><span class="detail-field-label">Valor</span><span class="detail-field-value">${money(work.valor)}</span></div>`;
+  b+=`<div class="detail-field"><span class="detail-field-label">Comissão</span><span class="detail-field-value" style="color:var(--status-green);font-weight:700">${money(work.comissao)}</span></div>`;
+  b+=`<div class="detail-field"><span class="detail-field-label">Data de cadastro</span><span class="detail-field-value">${formatDate(work.entryDate)}</span></div>`;
+  b+=`<div class="detail-field"><span class="detail-field-label">Data prev. entrega</span><span class="detail-field-value">${formatDate(work.dueDate)}</span></div>`;
+  b+=`<div class="detail-field"><span class="detail-field-label">Entrega real</span><span class="detail-field-value">${work.deliveredDate?formatDate(work.deliveredDate):'—'}</span></div></div>`;
+  const stages=type==='protese'?P_STAGES:PL_STAGES;
+  const curIdx=stages.indexOf(work.stage);
+  b+='<div><div class="detail-section-title">Fluxo</div><div class="detail-stage-history">';
+  stages.forEach((s,i)=>{const cls=i<curIdx?'done':i===curIdx?'current':'future';b+=`<div class="stage-history-item ${cls}"><span class="stage-history-dot"></span><span>${s}</span></div>`;});
+  b+='</div></div>';
+  b+=`<div><div class="detail-section-title">Observações</div><textarea class="detail-notes" id="detail-notes" placeholder="Observações...">${work.notes||''}</textarea></div>`;
+  document.getElementById('detail-body').innerHTML=b;
+  const n=document.getElementById('detail-notes');if(n)n.onchange=function(){work.notes=this.value;saveData();};
+  document.getElementById('detail-footer').style.display='';
+}
+function renderDetailEdit(){
+  const type=currentDetailType,id=currentDetailId;
+  const work=getWork(type,id);if(!work)return;
+  document.getElementById('detail-meta-row').innerHTML='';
+  document.getElementById('detail-patient').textContent='Editando';
+  let h='';
+  h+=`<div class="edit-field"><label>Paciente</label><input type="text" id="ed-patient" value="${work.patient}"></div>`;
+  h+=`<div class="edit-row"><div class="edit-field"><label>Clínica</label><select id="ed-clinica"></select></div><div class="edit-field"><label>Tipo</label><select id="ed-tipo"></select></div></div>`;
+  if(type==='protese'){
+    h+=`<div class="edit-field"><label>Dentes</label><div class="tooth-selector" id="ed-teeth"></div></div>`;
+    h+=`<div class="edit-row"><div class="edit-field"><label>Material</label><select id="ed-material"></select></div><div class="edit-field"><label>Cor</label><select id="ed-cor"></select></div></div>`;
+    h+=`<div class="edit-row"><div class="edit-field"><label>Elementos</label><input type="number" id="ed-elements" value="${work.elements}" min="1"></div><div class="edit-field"><label>Tem modelo?</label><div class="toggle-group" id="ed-modelo"><button type="button" class="toggle-btn" data-val="nao">Não</button><button type="button" class="toggle-btn" data-val="sim">Sim</button></div></div></div>`;
+  }else{
+    h+=`<div class="edit-field"><label>Quantidade</label><input type="number" id="ed-qty" value="${work.qty}" min="1"></div>`;
+  }
+  h+=`<div class="edit-row"><div class="edit-field"><label>Valor</label><input type="number" step="0.01" id="ed-valor" value="${work.valor}"></div><div class="edit-field"><label>Comissão</label><input type="number" step="0.01" id="ed-comissao" value="${work.comissao}"></div></div>`;
+  h+=`<div class="edit-row"><div class="edit-field"><label>Data de cadastro</label><input type="date" id="ed-entry" value="${work.entryDate}"></div><div class="edit-field"><label>Data prev. entrega</label><input type="date" id="ed-due" value="${work.dueDate}"></div></div>`;
+  h+=`<div class="edit-field"><label>Observações</label><textarea id="ed-notes" rows="3">${work.notes||''}</textarea></div>`;
+  h+=`<div class="edit-actions"><button class="btn btn-primary" onclick="saveEdit()">Salvar</button><button class="btn btn-ghost" onclick="cancelEdit()">Cancelar</button></div>`;
+  document.getElementById('detail-body').innerHTML=h;
+  document.getElementById('detail-footer').style.display='none';
+  fillClinicaSelect(document.getElementById('ed-clinica'),false);document.getElementById('ed-clinica').value=work.clinicaId;
+  fillTipoSelect(document.getElementById('ed-tipo'),type==='protese'?'Prótese':'Placa');document.getElementById('ed-tipo').value=work.tipoId;
+  if(type==='protese'){
+    fillMaterialSelect(document.getElementById('ed-material'));document.getElementById('ed-material').value=work.materialId;
+    fillCorSelect(document.getElementById('ed-cor'));document.getElementById('ed-cor').value=work.corId;
+    buildToothSelector('ed-teeth',work.teeth||[]);
+    wireToggleGroup('ed-modelo');setToggleValue('ed-modelo',work.temModelo?'sim':'nao');
+  }
+}
+function toggleEdit(){
+  if(!isEditing){isEditing=true;document.getElementById('edit-toggle-btn').innerHTML='👁️ Ver';renderDetailEdit();}
+  else{isEditing=false;document.getElementById('edit-toggle-btn').innerHTML='✏️ Editar';renderDetailView();}
+}
+function saveEdit(){
+  const work=getWork(currentDetailType,currentDetailId);if(!work)return;
+  work.patient=document.getElementById('ed-patient').value.trim()||work.patient;
+  work.clinicaId=parseInt(document.getElementById('ed-clinica').value);
+  work.tipoId=parseInt(document.getElementById('ed-tipo').value);
+  work.valor=parseFloat(document.getElementById('ed-valor').value)||0;
+  work.comissao=parseFloat(document.getElementById('ed-comissao').value)||0;
+  work.entryDate=document.getElementById('ed-entry').value||work.entryDate;
+  work.dueDate=document.getElementById('ed-due').value||work.dueDate;
+  work.notes=document.getElementById('ed-notes').value;
+  if(currentDetailType==='protese'){
+    work.materialId=parseInt(document.getElementById('ed-material').value);
+    work.corId=parseInt(document.getElementById('ed-cor').value);
+    work.elements=parseInt(document.getElementById('ed-elements').value)||1;
+    work.teeth=getToothSelection('ed-teeth');
+    work.temModelo=getToggleValue('ed-modelo')==='sim';
+  }else{
+    work.qty=parseInt(document.getElementById('ed-qty').value)||1;
+  }
+  isEditing=false;document.getElementById('edit-toggle-btn').innerHTML='✏️ Editar';
+  renderDetailView();
+  if(currentDetailType==='protese')renderProdutionProteses();else renderProdutionPlacas();
+  saveData();
+}
+function cancelEdit(){isEditing=false;document.getElementById('edit-toggle-btn').innerHTML='✏️ Editar';renderDetailView();}
+function closeDetail(){document.getElementById('detail-overlay').classList.remove('open');document.getElementById('detail-panel').classList.remove('open');currentDetailId=null;currentDetailType=null;isEditing=false;}
+function startDelete(){document.getElementById('delete-btn').style.display='none';document.getElementById('confirm-delete').classList.add('visible');}
+function cancelDelete(){document.getElementById('confirm-delete').classList.remove('visible');document.getElementById('delete-btn').style.display='';}
+function confirmDelete(){
+  if(currentDetailType==='protese')proteses=proteses.filter(w=>w.id!==currentDetailId);
+  else placas=placas.filter(w=>w.id!==currentDetailId);
+  closeDetail();
+  renderProdutionProteses();renderProdutionPlacas();
+  saveData();
+}
+
+/* ==================== RESUMO MENSAL ==================== */
+function renderResumoProteses(){
+  const c=document.getElementById('view-resumo-proteses');
+  const months=[...new Set(proteses.map(w=>monthKey(w.entryDate)))].filter(Boolean).sort().reverse();
+  const filterHtml=`<div class="resumo-filter-bar"><label style="font-size:12px;color:var(--text-muted);font-weight:600">Mês:</label><select onchange="pResumoMonth=this.value;renderResumoProteses();"><option value="all" ${pResumoMonth==='all'?'selected':''}>Todos os meses</option>${months.map(m=>`<option value="${m}" ${pResumoMonth===m?'selected':''}>${monthLabel(m)}</option>`).join('')}</select></div>`;
+  const filtered=pResumoMonth==='all'?proteses:proteses.filter(w=>monthKey(w.entryDate)===pResumoMonth);
+  const cadastrados=filtered.length;
+  const entregues=filtered.filter(w=>w.stage===P_ES).length;
+  const emProducao=cadastrados-entregues;
+  const totElementos=filtered.reduce((s,w)=>s+w.elements,0);
+  const totValor=filtered.reduce((s,w)=>s+w.valor,0);
+  const totComissao=filtered.reduce((s,w)=>s+w.comissao,0);
+  const statCards=`<div class="stat-cards">
+    <div class="stat-card"><div class="stat-card-label">Cadastrados</div><div class="stat-card-value">${cadastrados}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Entregues</div><div class="stat-card-value">${entregues}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Em produção</div><div class="stat-card-value">${emProducao}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total elementos</div><div class="stat-card-value">${totElementos}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total valor</div><div class="stat-card-value">${money(totValor)}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total comissão</div><div class="stat-card-value green">${money(totComissao)}</div></div>
+  </div>`;
+  let byClinica='<div class="resumo-group"><div class="resumo-group-header"><span style="font-weight:700;font-size:13px">Por clínica</span></div><table class="resumo-table"><thead><tr><th>Clínica</th><th>Trabalhos</th><th>Valor</th><th>Comissão</th></tr></thead><tbody>';
+  config.clinicas.forEach(cl=>{
+    const items=filtered.filter(w=>w.clinicaId===cl.id);if(!items.length)return;
+    byClinica+=`<tr><td style="font-weight:500">${cl.nome}</td><td>${items.length}</td><td>${money(items.reduce((s,w)=>s+w.valor,0))}</td><td style="color:var(--status-green);font-weight:600">${money(items.reduce((s,w)=>s+w.comissao,0))}</td></tr>`;
+  });
+  byClinica+='</tbody></table></div>';
+  let byTipo='<div class="resumo-group"><div class="resumo-group-header"><span style="font-weight:700;font-size:13px">Por tipo de trabalho</span></div><table class="resumo-table"><thead><tr><th>Tipo</th><th>Trabalhos</th><th>Valor</th><th>Comissão</th></tr></thead><tbody>';
+  config.tipos.filter(t=>t.categoria==='Prótese').forEach(tp=>{
+    const items=filtered.filter(w=>w.tipoId===tp.id);if(!items.length)return;
+    byTipo+=`<tr><td style="font-weight:500">${tp.nome}</td><td>${items.length}</td><td>${money(items.reduce((s,w)=>s+w.valor,0))}</td><td style="color:var(--status-green);font-weight:600">${money(items.reduce((s,w)=>s+w.comissao,0))}</td></tr>`;
+  });
+  byTipo+='</tbody></table></div>';
+  let detailTable='<div class="resumo-group"><div class="resumo-group-header"><span style="font-weight:700;font-size:13px">Detalhamento</span><span class="resumo-group-count">'+filtered.length+' trabalhos</span></div><table class="resumo-table"><thead><tr><th>Paciente</th><th>Cadastro</th><th>Entrega</th><th>Tipo</th><th>Clínica</th><th>Valor</th><th>Comissão</th><th>Status</th></tr></thead><tbody>';
+  filtered.slice().sort((a,b)=>b.entryDate.localeCompare(a.entryDate)).forEach(w=>{
+    const isDelivered=w.stage===P_ES;
+    const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+    const statusHtml=isDelivered?'<span class="delivered-badge">✓ Entregue</span>':`<span class="stage-badge" style="background:${P_STAGE_COLORS[w.stage]}22;color:${P_STAGE_COLORS[w.stage]}">${w.stage}</span>`;
+    detailTable+=`<tr class="${isDelivered?'row-delivered':''}"><td style="font-weight:500">${w.patient}</td><td>${formatDate(w.entryDate)}</td><td>${isDelivered?formatDate(w.deliveredDate):formatDate(w.dueDate)}</td><td>${tipo?tipo.nome:'—'}</td><td>${clinica?clinica.nome:'—'}</td><td>${money(w.valor)}</td><td style="color:var(--status-green);font-weight:600">${money(w.comissao)}</td><td>${statusHtml}</td></tr>`;
+  });
+  detailTable+='</tbody></table></div>';
+  if(!filtered.length)detailTable='<p style="text-align:center;padding:40px;color:var(--text-muted)">Nenhum trabalho neste período</p>';
+  c.innerHTML=`<div class="export-bar"><button class="btn btn-ghost" onclick="exportExcel('proteses')">⬇️ Exportar Excel</button></div>${filterHtml}${statCards}${byClinica}${byTipo}${detailTable}`;
+}
+function renderResumoPlacas(){
+  const c=document.getElementById('view-resumo-placas');
+  const months=[...new Set(placas.map(w=>monthKey(w.entryDate)))].filter(Boolean).sort().reverse();
+  const filterHtml=`<div class="resumo-filter-bar"><label style="font-size:12px;color:var(--text-muted);font-weight:600">Mês:</label><select onchange="plResumoMonth=this.value;renderResumoPlacas();"><option value="all" ${plResumoMonth==='all'?'selected':''}>Todos os meses</option>${months.map(m=>`<option value="${m}" ${plResumoMonth===m?'selected':''}>${monthLabel(m)}</option>`).join('')}</select></div>`;
+  const filtered=plResumoMonth==='all'?placas:placas.filter(w=>monthKey(w.entryDate)===plResumoMonth);
+  const cadastrados=filtered.length;
+  const entregues=filtered.filter(w=>w.stage===PL_ES).length;
+  const emProducao=cadastrados-entregues;
+  const totQty=filtered.reduce((s,w)=>s+w.qty,0);
+  const totValor=filtered.reduce((s,w)=>s+w.valor,0);
+  const totComissao=filtered.reduce((s,w)=>s+w.comissao,0);
+  const statCards=`<div class="stat-cards">
+    <div class="stat-card"><div class="stat-card-label">Cadastrados</div><div class="stat-card-value">${cadastrados}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Entregues</div><div class="stat-card-value">${entregues}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Em produção</div><div class="stat-card-value">${emProducao}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total placas</div><div class="stat-card-value">${totQty}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total valor</div><div class="stat-card-value">${money(totValor)}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total comissão</div><div class="stat-card-value green">${money(totComissao)}</div></div>
+  </div>`;
+  let detailTable='<div class="resumo-group"><div class="resumo-group-header"><span style="font-weight:700;font-size:13px">Detalhamento</span><span class="resumo-group-count">'+filtered.length+' placas</span></div><table class="resumo-table"><thead><tr><th>Paciente</th><th>Cadastro</th><th>Entrega</th><th>Tipo</th><th>Clínica</th><th>Valor</th><th>Comissão</th><th>Status</th></tr></thead><tbody>';
+  filtered.slice().sort((a,b)=>b.entryDate.localeCompare(a.entryDate)).forEach(w=>{
+    const isDelivered=w.stage===PL_ES;
+    const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+    const statusHtml=isDelivered?'<span class="delivered-badge">✓ Entregue</span>':`<span class="stage-badge" style="background:${PL_STAGE_COLORS[w.stage]}22;color:${PL_STAGE_COLORS[w.stage]}">${w.stage}</span>`;
+    detailTable+=`<tr class="${isDelivered?'row-delivered':''}"><td style="font-weight:500">${w.patient}</td><td>${formatDate(w.entryDate)}</td><td>${isDelivered?formatDate(w.deliveredDate):formatDate(w.dueDate)}</td><td>${tipo?tipo.nome:'—'}</td><td>${clinica?clinica.nome:'—'}</td><td>${money(w.valor)}</td><td style="color:var(--status-green);font-weight:600">${money(w.comissao)}</td><td>${statusHtml}</td></tr>`;
+  });
+  detailTable+='</tbody></table></div>';
+  if(!filtered.length)detailTable='<p style="text-align:center;padding:40px;color:var(--text-muted)">Nenhuma placa neste período</p>';
+  c.innerHTML=`<div class="export-bar"><button class="btn btn-ghost" onclick="exportExcel('placas')">⬇️ Exportar Excel</button></div>${filterHtml}${statCards}${detailTable}`;
+}
+
+/* ==================== EXPORT EXCEL/CSV ==================== */
+function exportExcel(type){
+  let csv='';
+  if(type==='proteses'){
+    csv='Clínica;Paciente;Dentes;Tipo;Material;Cor;Elementos;Tem Modelo;Valor;Comissão;Data Cadastro;Data Entrega;Status\n';
+    proteses.slice().sort((a,b)=>a.entryDate.localeCompare(b.entryDate)).forEach(w=>{
+      const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+      const status=w.stage===P_ES?'Entregue':w.stage;
+      csv+=`${clinica?clinica.nome:''};${w.patient};${formatTeeth(w.teeth)};${tipo?tipo.nome:''};${getMaterialName(w.materialId)};${getCorName(w.corId)};${w.elements};${w.temModelo?'Sim':'Não'};${money(w.valor)};${money(w.comissao)};${formatDate(w.entryDate)};${formatDate(w.stage===P_ES?w.deliveredDate:w.dueDate)};${status}\n`;
+    });
+  }else if(type==='placas'){
+    csv='Clínica;Paciente;Tipo;Quantidade;Valor;Comissão;Data Cadastro;Data Entrega;Status\n';
+    placas.slice().sort((a,b)=>a.entryDate.localeCompare(b.entryDate)).forEach(w=>{
+      const clinica=getClinica(w.clinicaId);const tipo=getTipo(w.tipoId);
+      const status=w.stage===PL_ES?'Entregue':w.stage;
+      csv+=`${clinica?clinica.nome:''};${w.patient};${tipo?tipo.nome:''};${w.qty};${money(w.valor)};${money(w.comissao)};${formatDate(w.entryDate)};${formatDate(w.stage===PL_ES?w.deliveredDate:w.dueDate)};${status}\n`;
+    });
+  }else if(type==='recibos'){
+    csv='Número;Data;Qtd Trabalhos;Valor Total;Possui Foto\n';
+    recibos.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>{
+      csv+=`${r.numero};${formatDate(r.date)};${r.items.length};${money(reciboTotal(r))};${r.photo?'Sim':'Não'}\n`;
+    });
+  }
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`resumo-${type}-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+/* ==================== RECIBOS ==================== */
+function reciboItemWork(item){return item.type==='protese'?proteses.find(w=>w.id===item.id):placas.find(w=>w.id===item.id);}
+function reciboTotal(r){return r.items.reduce((s,it)=>{const w=reciboItemWork(it);return s+(w?w.valor:0);},0);}
+function reciboUsedKeys(){const used=new Set();recibos.forEach(r=>r.items.forEach(it=>used.add(it.type+':'+it.id)));return used;}
+
+function renderRecibosLista(){
+  const c=document.getElementById('view-recibos-lista');
+  if(!recibos.length){c.innerHTML='<div class="recibo-empty">🧾 Nenhum recibo cadastrado ainda.</div>';return;}
+  const sorted=[...recibos].sort((a,b)=>b.date.localeCompare(a.date));
+  let html='<div class="export-bar"><button class="btn btn-ghost" onclick="exportExcel(\'recibos\')">⬇️ Exportar Excel</button></div><div class="recibos-grid">';
+  sorted.forEach(r=>{
+    const img=r.photo?`<img src="${r.photo}" class="recibo-card-img">`:`<div class="recibo-card-noimg">🧾</div>`;
+    html+=`<div class="recibo-card" onclick="openReciboDetail(${r.id})">${img}<div class="recibo-card-body"><div class="recibo-card-num">Recibo ${r.numero}</div><div class="recibo-card-date">${formatDate(r.date)} · ${r.items.length} trabalho${r.items.length>1?'s':''}</div><div class="recibo-card-total">${money(reciboTotal(r))}</div></div></div>`;
+  });
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+function reciboClinicaId(r){if(r.clinicaId)return r.clinicaId;const first=r.items[0];const w=first?reciboItemWork(first):null;return w?w.clinicaId:null;}
+
+function openReciboDetail(id){
+  const r=recibos.find(x=>x.id===id);if(!r)return;
+  const c=document.getElementById('recibo-detail-content');
+  const clinica=getClinica(reciboClinicaId(r));
+  let rows='';
+  r.items.forEach(it=>{
+    const w=reciboItemWork(it);if(!w)return;
+    const tipo=getTipo(w.tipoId);
+    rows+=`<tr><td>${w.patient}</td><td>${tipo?tipo.nome:'—'}</td><td>${money(w.valor)}</td></tr>`;
+  });
+  const photoHtml=r.photo
+    ?`<div class="photo-section has-photo"><img src="${r.photo}" class="photo-preview" onclick="viewPhoto('${r.photo}')" style="cursor:pointer"><div class="photo-actions"><button class="btn btn-ghost btn-sm" onclick="attachReciboPhoto(${r.id})">🔄 Trocar</button><button class="btn btn-danger btn-sm" onclick="removeReciboPhoto(${r.id})">🗑️ Remover</button></div></div>`
+    :`<div class="photo-section" onclick="attachReciboPhoto(${r.id})"><div class="photo-placeholder">📷 Anexar foto do recibo assinado</div></div>`;
+  c.innerHTML=`<h2>Recibo ${r.numero} — ${formatDate(r.date)}</h2>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:10px">${clinica?clinica.nome:'—'}</p>
+    <div class="recibo-doc"><table><thead><tr><th>Paciente</th><th>Tipo</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table>
+    <div style="text-align:right;font-weight:700;font-size:16px;margin-top:8px">Total: ${money(reciboTotal(r))}</div></div>
+    <div style="margin-top:18px"><div class="detail-section-title">Foto do recibo assinado</div>${photoHtml}</div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="printReciboEntrega(${r.id})">🖨️ Imprimir</button><button class="btn btn-danger" onclick="deleteRecibo(${r.id})">🗑️ Excluir recibo</button><button class="btn btn-primary" onclick="closeModal('recibo-detail-modal')">Fechar</button></div>`;
+  document.getElementById('recibo-detail-modal').classList.add('open');
+}
+function attachReciboPhoto(id){
+  const input=document.createElement('input');input.type='file';input.accept='image/*';input.capture='environment';
+  input.onchange=function(){
+    const file=input.files[0];if(!file)return;
+    compressImage(file,900,0.65,function(dataUrl){
+      const r=recibos.find(x=>x.id===id);
+      if(r){r.photo=dataUrl;saveData();renderRecibosLista();openReciboDetail(id);}
+    });
+  };
+  input.click();
+}
+function removeReciboPhoto(id){const r=recibos.find(x=>x.id===id);if(r){delete r.photo;saveData();renderRecibosLista();openReciboDetail(id);}}
+function deleteRecibo(id){if(!confirm('Excluir este recibo? Os trabalhos vinculados voltam a ficar disponíveis para um novo recibo.'))return;recibos=recibos.filter(r=>r.id!==id);closeModal('recibo-detail-modal');renderRecibosLista();saveData();}
+
+/* ==================== RECIBO DE ENTREGA (filtrado por mês/clínica/finalizado) ==================== */
+function reciboEligibleWorks(){
+  const used=reciboUsedKeys();
+  return[
+    ...proteses.filter(w=>w.stage===P_ES).map(w=>({type:'protese',w})),
+    ...placas.filter(w=>w.stage===PL_ES).map(w=>({type:'placa',w}))
+  ].filter(x=>!used.has(x.type+':'+x.w.id));
+}
+function renderRecibosEntrega(){
+  const c=document.getElementById('view-recibos-entrega');
+  const eligible=reciboEligibleWorks();
+  const months=[...new Set(eligible.map(x=>monthKey(x.w.entryDate)))].filter(Boolean).sort().reverse();
+  if(!deClinica&&config.clinicas.length)deClinica=config.clinicas[0].id;
+  const filterHtml=`<div class="resumo-filter-bar">
+    <label style="font-size:12px;color:var(--text-muted);font-weight:600">Mês:</label>
+    <select onchange="deMonth=this.value;renderRecibosEntrega()"><option value="all" ${deMonth==='all'?'selected':''}>Todos os meses</option>${months.map(m=>`<option value="${m}" ${deMonth===m?'selected':''}>${monthLabel(m)}</option>`).join('')}</select>
+    <label style="font-size:12px;color:var(--text-muted);font-weight:600;margin-left:10px">Clínica:</label>
+    <select onchange="deClinica=parseInt(this.value);renderRecibosEntrega()">${config.clinicas.map(cl=>`<option value="${cl.id}" ${deClinica===cl.id?'selected':''}>${cl.nome}</option>`).join('')}</select>
+  </div>`;
+  const filtered=eligible.filter(x=>(deMonth==='all'||monthKey(x.w.entryDate)===deMonth)&&x.w.clinicaId===deClinica);
+  filtered.sort((a,b)=>a.w.entryDate.localeCompare(b.w.entryDate));
+  let items='';
+  filtered.forEach(x=>{
+    const w=x.w;const tipo=getTipo(w.tipoId);const key=x.type+':'+w.id;
+    const desc=x.type==='protese'?`${tipo?tipo.nome:'—'}${w.teeth&&w.teeth.length?' · dentes '+formatTeeth(w.teeth):''}`:`${tipo?tipo.nome:'—'} · ${w.qty}x`;
+    items+=`<label class="recibo-pick-item"><input type="checkbox" class="de-pick-cb" data-key="${key}" checked><span class="rp-name">${w.patient}</span><span class="rp-meta">${desc}</span></label>`;
+  });
+  if(!filtered.length)items='<div class="recibo-empty" style="padding:20px">Nenhum trabalho finalizado nesse período para essa clínica.</div>';
+  c.innerHTML=`${filterHtml}
+    <div class="detail-section-title">Trabalhos finalizados prontos para entrega</div>
+    <div class="recibo-picklist" id="de-picklist">${items}</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-primary" onclick="createReciboEntrega()" ${!filtered.length?'disabled':''}>Gerar recibo de entrega</button>
+    </div>`;
+}
+function createReciboEntrega(){
+  const checked=document.querySelectorAll('.de-pick-cb:checked');
+  if(!checked.length){alert('Selecione ao menos um trabalho.');return;}
+  const items=[...checked].map(cb=>{const[type,idStr]=cb.dataset.key.split(':');return{type,id:parseInt(idStr)};});
+  const date=new Date().toISOString().split('T')[0];
+  const numero=String(nextIds.recibo).padStart(3,'0');
+  const recibo={id:nextIds.recibo++,numero,date,clinicaId:deClinica,items,photo:null};
+  recibos.push(recibo);
+  saveData();
+  renderRecibosLista();renderRecibosEntrega();
+  printReciboEntrega(recibo.id);
+}
+function printDoc(id){
+  const el=document.getElementById(id);
+  el.classList.add('active-print');
+  document.body.classList.add('print-mode');
+  window.print();
+  setTimeout(()=>{el.classList.remove('active-print');document.body.classList.remove('print-mode');},400);
+}
+function printReciboEntrega(id){
+  const r=recibos.find(x=>x.id===id);if(!r)return;
+  const clinica=getClinica(reciboClinicaId(r));
+  const f=config.faturamento||{};
+  document.getElementById('de-logo').src=NELAB_LOGO_B64;
+  document.getElementById('de-brand-info').innerHTML=`${(f.endereco||'').replace(/\n/g,'<br>')}<br>${f.email||''}`;
+  document.getElementById('de-number').textContent='Recibo Nº '+r.numero;
+  document.getElementById('de-client').innerHTML=`<p style="font-weight:600">${clinica?clinica.nome:'—'}</p><p>${(clinica&&clinica.endereco||'').replace(/\n/g,'<br>')}</p>`;
+  document.getElementById('de-date').textContent=formatDate(r.date);
+  let rows='';
+  r.items.forEach((it,i)=>{
+    const w=reciboItemWork(it);if(!w)return;
+    const tipo=getTipo(w.tipoId);
+    const qty=it.type==='protese'?w.elements:w.qty;
+    rows+=`<tr><td>${i+1}</td><td>${w.patient}</td><td>${tipo?tipo.nome:'—'}</td><td class="num">${qty}</td></tr>`;
+  });
+  document.getElementById('de-items').innerHTML=rows;
+  printDoc('doc-recibo-entrega');
+}
+
+/* ==================== CONFIGURAÇÕES: FATURAMENTO ==================== */
+function renderConfigFaturamento(){
+  const c=document.getElementById('view-config-faturamento');
+  const f=config.faturamento||{};
+  c.innerHTML=`
+    <div class="detail-section-title">Dados exibidos no Invoice e Recibo de Entrega</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Razão social / Nome</label><input type="text" class="form-input" id="fat-razao" value="${f.razaoSocial||''}"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-input" id="fat-email" value="${f.email||''}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Endereço</label><input type="text" class="form-input" id="fat-endereco" value="${f.endereco||''}"></div>
+    <div class="detail-section-title" style="margin-top:22px">Dados de pagamento</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Chave PIX</label><input type="text" class="form-input" id="fat-pix" value="${f.pixKey||''}"></div>
+      <div class="form-group"><label class="form-label">Titular</label><input type="text" class="form-input" id="fat-titular" value="${f.titular||''}"></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label class="form-label">Banco</label><input type="text" class="form-input" id="fat-banco" value="${f.banco||''}"></div>
+      <div class="form-group"><label class="form-label">Agência</label><input type="text" class="form-input" id="fat-agencia" value="${f.agencia||''}"></div>
+      <div class="form-group"><label class="form-label">Conta</label><input type="text" class="form-input" id="fat-conta" value="${f.conta||''}"></div>
+    </div>
+    <div class="export-bar"><button class="btn btn-primary" onclick="saveFaturamento()">Salvar</button></div>`;
+}
+function saveFaturamento(){
+  config.faturamento={
+    razaoSocial:document.getElementById('fat-razao').value.trim(),
+    email:document.getElementById('fat-email').value.trim(),
+    endereco:document.getElementById('fat-endereco').value.trim(),
+    pixKey:document.getElementById('fat-pix').value.trim(),
+    titular:document.getElementById('fat-titular').value.trim(),
+    banco:document.getElementById('fat-banco').value.trim(),
+    agencia:document.getElementById('fat-agencia').value.trim(),
+    conta:document.getElementById('fat-conta').value.trim()
+  };
+  saveData();
+  alert('Dados de faturamento salvos!');
+}
+
+/* ==================== INVOICE (todos os trabalhos do mês, com valor de venda) ==================== */
+function renderRecibosInvoice(){
+  const c=document.getElementById('view-recibos-invoice');
+  const allWorks=[...proteses.map(w=>({type:'protese',w})),...placas.map(w=>({type:'placa',w}))];
+  const months=[...new Set(allWorks.map(x=>monthKey(x.w.entryDate)))].filter(Boolean).sort().reverse();
+  if(!invClinica&&config.clinicas.length)invClinica=config.clinicas[0].id;
+  const filterHtml=`<div class="resumo-filter-bar">
+    <label style="font-size:12px;color:var(--text-muted);font-weight:600">Mês:</label>
+    <select onchange="invMonth=this.value;renderRecibosInvoice()"><option value="all" ${invMonth==='all'?'selected':''}>Todos os meses</option>${months.map(m=>`<option value="${m}" ${invMonth===m?'selected':''}>${monthLabel(m)}</option>`).join('')}</select>
+    <label style="font-size:12px;color:var(--text-muted);font-weight:600;margin-left:10px">Clínica:</label>
+    <select onchange="invClinica=parseInt(this.value);renderRecibosInvoice()">${config.clinicas.map(cl=>`<option value="${cl.id}" ${invClinica===cl.id?'selected':''}>${cl.nome}</option>`).join('')}</select>
+  </div>`;
+  const filtered=allWorks.filter(x=>(invMonth==='all'||monthKey(x.w.entryDate)===invMonth)&&x.w.clinicaId===invClinica);
+  filtered.sort((a,b)=>a.w.entryDate.localeCompare(b.w.entryDate));
+  let items='',total=0;
+  filtered.forEach(x=>{
+    const w=x.w;const tipo=getTipo(w.tipoId);const key=x.type+':'+w.id;
+    total+=w.valor;
+    items+=`<label class="recibo-pick-item"><input type="checkbox" class="inv-pick-cb" data-key="${key}" data-valor="${w.valor}" checked onchange="updateInvoiceTotal()"><span class="rp-name">${w.patient}</span><span class="rp-meta">${tipo?tipo.nome:'—'}</span><span class="rp-valor">${money(w.valor)}</span></label>`;
+  });
+  if(!filtered.length)items='<div class="recibo-empty" style="padding:20px">Nenhum trabalho cadastrado nesse período para essa clínica.</div>';
+  c.innerHTML=`${filterHtml}
+    <div class="detail-section-title">Trabalhos do mês (todos os status)</div>
+    <div class="recibo-picklist" id="inv-picklist">${items}</div>
+    <div class="form-group" style="max-width:220px;margin-top:14px"><label class="form-label">Forma de pagamento</label><select class="form-select" id="inv-payment"><option>PIX</option><option>Dinheiro</option><option>Transferência</option></select></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+      <span style="font-size:15px;font-weight:700">Total: <span id="inv-total-preview" style="color:var(--status-green)">${money(total)}</span></span>
+      <button class="btn btn-primary" onclick="createInvoice()" ${!filtered.length?'disabled':''}>Gerar Invoice</button>
+    </div>
+    ${renderInvoiceHistoryHtml()}`;
+}
+function updateInvoiceTotal(){
+  let total=0;
+  document.querySelectorAll('.inv-pick-cb:checked').forEach(cb=>{total+=parseFloat(cb.dataset.valor)||0;});
+  document.getElementById('inv-total-preview').textContent=money(total);
+}
+function renderInvoiceHistoryHtml(){
+  if(!invoices.length)return'';
+  const sorted=[...invoices].sort((a,b)=>b.date.localeCompare(a.date));
+  const rows=sorted.map(inv=>{
+    const clinica=getClinica(inv.clinicaId);
+    return`<tr><td style="font-weight:500">${inv.numero}</td><td>${formatDate(inv.date)}</td><td>${clinica?clinica.nome:'—'}</td><td style="color:var(--status-green);font-weight:600">${money(inv.total)}</td><td><button class="icon-btn" onclick="reprintInvoice(${inv.id})">🖨️</button></td></tr>`;
+  }).join('');
+  return`<div class="resumo-group" style="margin-top:28px"><div class="resumo-group-header"><span style="font-weight:700;font-size:13px">Invoices geradas</span></div>
+    <table class="resumo-table"><thead><tr><th>Número</th><th>Data</th><th>Clínica</th><th>Total</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function createInvoice(){
+  const checked=document.querySelectorAll('.inv-pick-cb:checked');
+  if(!checked.length){alert('Selecione ao menos um trabalho.');return;}
+  const paymentMethod=document.getElementById('inv-payment').value;
+  const items=[];
+  checked.forEach(cb=>{
+    const[type,idStr]=cb.dataset.key.split(':');const id=parseInt(idStr);
+    const w=type==='protese'?proteses.find(x=>x.id===id):placas.find(x=>x.id===id);
+    if(!w)return;
+    const tipo=getTipo(w.tipoId);
+    const qty=type==='protese'?w.elements:w.qty;
+    items.push({patient:w.patient,descricao:tipo?tipo.nome:'—',qty,valorUnit:qty?w.valor/qty:w.valor,valorTotal:w.valor});
+  });
+  const total=items.reduce((s,it)=>s+it.valorTotal,0);
+  const date=new Date().toISOString().split('T')[0];
+  const numero='FAT-'+String(nextIds.invoice).padStart(4,'0');
+  const invoice={id:nextIds.invoice++,numero,date,clinicaId:invClinica,monthKey:invMonth,items,paymentMethod,total};
+  invoices.push(invoice);
+  saveData();
+  renderRecibosInvoice();
+  printInvoiceDoc(invoice);
+}
+function reprintInvoice(id){const inv=invoices.find(x=>x.id===id);if(inv)printInvoiceDoc(inv);}
+function printInvoiceDoc(inv){
+  const clinica=getClinica(inv.clinicaId);
+  const f=config.faturamento||{};
+  document.getElementById('inv-logo').src=NELAB_LOGO_B64;
+  document.getElementById('inv-brand-name').textContent=f.razaoSocial||'NeLab';
+  document.getElementById('inv-brand-info').innerHTML=`${(f.endereco||'').replace(/\n/g,'<br>')}<br>${f.email||''}`;
+  document.getElementById('inv-number').textContent='# '+inv.numero;
+  document.getElementById('inv-client').innerHTML=`<p style="font-weight:600">${clinica?clinica.nome:'—'}</p><p>${(clinica&&clinica.endereco||'').replace(/\n/g,'<br>')}</p>`;
+  document.getElementById('inv-date').textContent=formatDate(inv.date);
+  let rows='';
+  inv.items.forEach((it,i)=>{rows+=`<tr><td>${i+1}</td><td>${it.patient}<br><span style="color:#666;font-size:11px">${it.descricao}</span></td><td class="num">${it.qty}</td><td class="num">${money(it.valorUnit)}</td><td class="num">${money(it.valorTotal)}</td></tr>`;});
+  document.getElementById('inv-items').innerHTML=rows;
+  document.getElementById('inv-totals').innerHTML=`<tr><td class="total-label">Subtotal</td><td class="total-value">${money(inv.total)}</td></tr><tr class="grand-total"><td class="total-label">Total</td><td class="total-value">R$ ${money(inv.total)}</td></tr>`;
+  document.getElementById('inv-payment').innerHTML=`<h4>Dados para pagamento</h4><p><strong>Forma:</strong> ${inv.paymentMethod}</p><p><strong>PIX:</strong> ${f.pixKey||''}</p><p><strong>Titular:</strong> ${f.titular||''}</p><p><strong>Banco:</strong> ${f.banco||''} &nbsp; Agência: ${f.agencia||''} &nbsp; Conta: ${f.conta||''}</p>`;
+  printDoc('doc-invoice');
+}
+
+/* ==================== CONFIGURAÇÕES: CLÍNICAS ==================== */
+function renderConfigClinicas(){
+  const c=document.getElementById('view-config-clinicas');
+  let rows=config.clinicas.map(cl=>`<tr><td style="font-weight:500">${cl.nome}</td><td>${cl.telefone||'—'}</td><td>${cl.cidade||'—'}</td><td><span class="status-pill ${cl.ativa?'ativa':'inativa'}">${cl.ativa?'Ativa':'Inativa'}</span></td><td><button class="icon-btn" onclick="openClinicaModal(${cl.id})">✏️</button> <button class="icon-btn" onclick="deleteClinica(${cl.id})">🗑️</button></td></tr>`).join('');
+  c.innerHTML=`<div class="export-bar"><button class="btn btn-primary" onclick="openClinicaModal()">+ Nova clínica</button></div>
+    <table class="config-table"><thead><tr><th>Nome</th><th>Telefone</th><th>Cidade</th><th>Status</th><th>Ações</th></tr></thead><tbody>${rows||'<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">Nenhuma clínica cadastrada</td></tr>'}</tbody></table>`;
+}
+function openClinicaModal(id){
+  wireToggleGroup('cl-status');
+  if(id){
+    const cl=config.clinicas.find(c=>c.id===id);
+    document.getElementById('clinica-modal-title').textContent='Editar clínica';
+    document.getElementById('cl-id').value=id;
+    document.getElementById('cl-nome').value=cl.nome;
+    document.getElementById('cl-telefone').value=cl.telefone||'';
+    document.getElementById('cl-cidade').value=cl.cidade||'';
+    document.getElementById('cl-endereco').value=cl.endereco||'';
+    setToggleValue('cl-status',cl.ativa?'ativa':'inativa');
+  }else{
+    document.getElementById('clinica-modal-title').textContent='Nova clínica';
+    document.getElementById('cl-id').value='';
+    document.getElementById('cl-nome').value='';
+    document.getElementById('cl-telefone').value='';
+    document.getElementById('cl-cidade').value='';
+    document.getElementById('cl-endereco').value='';
+    setToggleValue('cl-status','ativa');
+  }
+  document.getElementById('clinica-modal').classList.add('open');
+}
+function saveClinica(){
+  const nome=document.getElementById('cl-nome').value.trim();
+  if(!nome){alert('Informe o nome da clínica.');return;}
+  const id=document.getElementById('cl-id').value;
+  const ativa=getToggleValue('cl-status')==='ativa';
+  const telefone=document.getElementById('cl-telefone').value.trim();
+  const cidade=document.getElementById('cl-cidade').value.trim();
+  const endereco=document.getElementById('cl-endereco').value.trim();
+  if(id){
+    const cl=config.clinicas.find(c=>c.id===parseInt(id));
+    cl.nome=nome;cl.telefone=telefone;cl.cidade=cidade;cl.endereco=endereco;cl.ativa=ativa;
+  }else{
+    config.clinicas.push({id:nextIds.clinica++,nome,telefone,cidade,endereco,ativa});
+  }
+  closeModal('clinica-modal');
+  renderConfigClinicas();saveData();
+}
+function deleteClinica(id){
+  if(!confirm('Excluir esta clínica? Trabalhos já cadastrados manterão a referência antiga.'))return;
+  config.clinicas=config.clinicas.filter(c=>c.id!==id);
+  renderConfigClinicas();saveData();
+}
+
+/* ==================== CONFIGURAÇÕES: TIPOS ==================== */
+function renderConfigTipos(){
+  const c=document.getElementById('view-config-tipos');
+  let rows=config.tipos.map(t=>`<tr><td style="font-weight:500">${t.nome}</td><td>${t.categoria}</td><td>${money(t.valorVenda)}</td><td style="color:var(--status-green);font-weight:600">${money(t.comissao)}</td><td><button class="icon-btn" onclick="openTipoModal(${t.id})">✏️</button> <button class="icon-btn" onclick="deleteTipo(${t.id})">🗑️</button></td></tr>`).join('');
+  c.innerHTML=`<div class="export-bar"><button class="btn btn-primary" onclick="openTipoModal()">+ Novo tipo</button></div>
+    <table class="config-table"><thead><tr><th>Tipo</th><th>Categoria</th><th>Valor venda</th><th>Comissão</th><th>Ações</th></tr></thead><tbody>${rows||'<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">Nenhum tipo cadastrado</td></tr>'}</tbody></table>`;
+}
+function openTipoModal(id){
+  wireToggleGroup('tp-categoria');
+  if(id){
+    const t=config.tipos.find(x=>x.id===id);
+    document.getElementById('tipo-modal-title').textContent='Editar tipo de trabalho';
+    document.getElementById('tp-id').value=id;
+    document.getElementById('tp-nome').value=t.nome;
+    document.getElementById('tp-valor').value=t.valorVenda;
+    document.getElementById('tp-comissao').value=t.comissao;
+    setToggleValue('tp-categoria',t.categoria);
+  }else{
+    document.getElementById('tipo-modal-title').textContent='Novo tipo de trabalho';
+    document.getElementById('tp-id').value='';
+    document.getElementById('tp-nome').value='';
+    document.getElementById('tp-valor').value='';
+    document.getElementById('tp-comissao').value='';
+    setToggleValue('tp-categoria','Prótese');
+  }
+  document.getElementById('tipo-modal').classList.add('open');
+}
+function saveTipo(){
+  const nome=document.getElementById('tp-nome').value.trim();
+  if(!nome){alert('Informe o nome do tipo.');return;}
+  const id=document.getElementById('tp-id').value;
+  const categoria=getToggleValue('tp-categoria');
+  const valorVenda=parseFloat(document.getElementById('tp-valor').value)||0;
+  const comissao=parseFloat(document.getElementById('tp-comissao').value)||0;
+  if(id){
+    const t=config.tipos.find(x=>x.id===parseInt(id));
+    t.nome=nome;t.categoria=categoria;t.valorVenda=valorVenda;t.comissao=comissao;
+  }else{
+    config.tipos.push({id:nextIds.tipo++,nome,categoria,valorVenda,comissao});
+  }
+  closeModal('tipo-modal');
+  renderConfigTipos();saveData();
+}
+function deleteTipo(id){
+  if(!confirm('Excluir este tipo de trabalho?'))return;
+  config.tipos=config.tipos.filter(t=>t.id!==id);
+  renderConfigTipos();saveData();
+}
+
+/* ==================== CONFIGURAÇÕES: MATERIAIS / CORES (listas simples) ==================== */
+function renderConfigMateriais(){
+  const c=document.getElementById('view-config-materiais');
+  const tags=config.materiais.map(m=>`<span class="simple-tag">${m.nome}<button onclick="deleteMaterial(${m.id})">✕</button></span>`).join('');
+  c.innerHTML=`<div class="form-row" style="max-width:420px"><input type="text" class="form-input" id="new-material-input" placeholder="Novo material..."><button class="btn btn-primary" onclick="addMaterial()">+ Adicionar</button></div><div class="simple-tag-list">${tags||'<span style="color:var(--text-muted)">Nenhum material cadastrado</span>'}</div>`;
+}
+function addMaterial(){
+  const input=document.getElementById('new-material-input');
+  const nome=input.value.trim();if(!nome)return;
+  config.materiais.push({id:nextIds.material++,nome});
+  input.value='';
+  renderConfigMateriais();saveData();
+}
+function deleteMaterial(id){config.materiais=config.materiais.filter(m=>m.id!==id);renderConfigMateriais();saveData();}
+
+function renderConfigCores(){
+  const c=document.getElementById('view-config-cores');
+  const tags=config.cores.map(x=>`<span class="simple-tag">${x.nome}<button onclick="deleteCor(${x.id})">✕</button></span>`).join('');
+  c.innerHTML=`<div class="form-row" style="max-width:420px"><input type="text" class="form-input" id="new-cor-input" placeholder="Nova cor..."><button class="btn btn-primary" onclick="addCor()">+ Adicionar</button></div><div class="simple-tag-list">${tags||'<span style="color:var(--text-muted)">Nenhuma cor cadastrada</span>'}</div>`;
+}
+function addCor(){
+  const input=document.getElementById('new-cor-input');
+  const nome=input.value.trim();if(!nome)return;
+  config.cores.push({id:nextIds.cor++,nome});
+  input.value='';
+  renderConfigCores();saveData();
+}
+function deleteCor(id){config.cores=config.cores.filter(x=>x.id!==id);renderConfigCores();saveData();}
+
+/* ==================== MODAL OVERLAY CLICK-TO-CLOSE ==================== */
+['new-protese-modal','new-placa-modal','clinica-modal','tipo-modal','photo-modal','recibo-detail-modal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal(id);});
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeDetail();['new-protese-modal','new-placa-modal','clinica-modal','tipo-modal','photo-modal','recibo-detail-modal'].forEach(closeModal);}
+});
+
+/* ==================== INIT ==================== */
+function renderEverything(){
+  renderProdutionProteses();renderProdutionPlacas();
+  if(currentTopSection==='resumo'){renderResumoProteses();renderResumoPlacas();}
+  if(currentTopSection==='recibos'){renderRecibosLista();renderRecibosEntrega();renderRecibosInvoice();}
+  if(currentTopSection==='config'){renderConfigClinicas();renderConfigTipos();renderConfigMateriais();renderConfigCores();renderConfigFaturamento();}
+}
+if(!loadData()){seedDefaults();}
+updateHeaderBtn();
+renderEverything();
+</script>
+</body>
+</html>
